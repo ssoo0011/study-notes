@@ -1,0 +1,28 @@
+:root{--home-gradient:linear-gradient(105deg,#263cf2 0%,#7138d3 52%,#d13f9a 100%)}
+body{background:#fff!important;background-image:none!important}
+body .site-header{height:72px!important;max-width:none!important;padding:0 max(28px,calc((100% - 1080px)/2))!important;background:#fff!important;border-bottom:1px solid #edf0f4!important;box-shadow:none!important}
+body .brand{font-size:17px!important;font-weight:700!important;color:#29334b}
+body .brand-mark{background:var(--home-gradient)!important;border-radius:10px!important;box-shadow:none!important}
+body .home-main{max-width:1000px!important;margin:0 auto!important;padding:48px 30px 60px!important}
+body .subject-section{width:100%}
+body .section-heading{display:flex!important;align-items:end!important;justify-content:space-between!important;margin:0 0 27px!important;padding:0 2px!important}
+body .section-heading h1{margin:0!important;font-size:clamp(30px,4vw,42px)!important;line-height:1.2!important;letter-spacing:-.055em!important;background:var(--home-gradient);background-clip:text;-webkit-background-clip:text;color:transparent!important}
+body .section-heading .count{padding:7px 11px!important;border:1px solid #e8e9f2!important;border-radius:999px!important;background:#fff!important;color:#68738a!important;font-size:12px!important}
+body .study-stage{margin:0 0 18px!important;padding:17px 20px 9px!important;background:#fff!important;border:1px solid #e8ebf2!important;border-radius:16px!important;box-shadow:0 4px 18px #25345508!important}
+body .study-stage h2{display:flex!important;align-items:center!important;gap:10px!important;margin:0 0 8px!important;color:#29334b!important;font-size:16px!important;font-weight:700!important;letter-spacing:-.025em!important}
+body .study-stage h2>span:first-child{display:grid;place-items:center;width:34px;height:34px;border:1px solid #ecebfa;border-radius:11px;background:linear-gradient(140deg,#f2f1ff,#fff2f8);font-size:18px}
+body .study-stage h2 small{margin-left:auto;color:#8791a2!important;font-size:11px!important;font-weight:400!important;letter-spacing:0}
+body .subject-list{list-style:decimal-leading-zero!important;margin:0!important;padding:0 0 0 40px!important;border:0!important}
+body .subject-list li{padding:0!important;border:0!important;border-top:1px solid #f0f2f6!important}
+body .subject-list li::marker{color:#6451dc!important;font:500 11px 'Pretendard',sans-serif!important}
+body .subject-list a{display:grid!important;grid-template-columns:34px minmax(0,1fr) 20px!important;align-items:center!important;gap:11px!important;min-height:51px!important;padding:6px 9px!important;border-radius:9px!important;background:transparent!important;transition:background .16s!important}
+body .subject-list a:hover{background:#f8f8ff!important}
+body .topic-icon{display:grid;place-items:center;width:30px;height:30px;border:1px solid #eef0f5;border-radius:9px;background:#fff;font-size:17px}
+body .topic-copy{display:grid;grid-template-columns:minmax(180px,.75fr) minmax(0,1.25fr);align-items:center;gap:12px}
+body .topic-copy strong{color:#2c354a;font-size:13px;font-weight:650;letter-spacing:-.015em}
+body .topic-copy small{color:#7a8496;font-size:11px}
+body .topic-arrow{color:#aab2c0;font-size:15px;text-align:center;transition:color .16s,transform .16s}
+body .subject-list a:hover .topic-arrow{color:#6d43d2;transform:translate(2px,-2px)}
+body .optional-stage{border-style:dashed;background:linear-gradient(110deg,#fff,#fcfaff)!important}
+body .site-footer{padding:24px!important;color:#98a0ad!important}
+@media(max-width:650px){body .site-header{height:62px!important;padding:0 18px!important}body .home-main{padding:31px 15px 42px!important}body .section-heading{align-items:flex-start!important;gap:10px!important;flex-direction:column!important;margin-bottom:18px!important}body .section-heading h1{font-size:31px!important}body .study-stage{padding:13px 11px 7px!important;margin-bottom:12px!important;border-radius:13px!important}body .study-stage h2{flex-wrap:wrap;font-size:14px!important}body .study-stage h2 small{width:100%;margin:0 0 0 44px}body .subject-list{padding-left:31px!important}body .subject-list a{grid-template-columns:29px minmax(0,1fr) 16px!important;gap:8px!important;min-height:49px!important;padding:5px 4px!important}body .topic-icon{width:27px;height:27px;font-size:15px}body .topic-copy{grid-template-columns:1fr;gap:2px}body .topic-copy strong{font-size:12px}body .topic-copy small{font-size:10px}}

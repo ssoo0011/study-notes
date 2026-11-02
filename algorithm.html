@@ -1,0 +1,352 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>자료구조와 알고리즘 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">ALGORITHMS · CONTENTS</p>
+<h2>자료구조와 알고리즘</h2>
+<nav aria-label="자료구조와 알고리즘 목차"><a class="field-start-link" href="#algo-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 문제와 복잡도</summary>
+<div class="toc-links"><a href="#algo-ch01">문제를 작은 단계로</a>
+<a href="#algo-big-o">Big O</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · 배열과 목록</summary>
+<div class="toc-links"><a href="#algo-ch02">Array·List</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 탐색과 정렬</summary>
+<div class="toc-links"><a href="#algo-ch03">검색하기</a>
+<a href="#algo-sort">정렬하기</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 자료구조 선택</summary>
+<div class="toc-links"><a href="#algo-ch04">Stack·Queue</a>
+<a href="#algo-map">Set·Map</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 트리와 그래프</summary>
+<div class="toc-links"><a href="#algo-ch05">관계 표현</a>
+<a href="#algo-graph">탐색</a>
+</div>
+</details>
+<details class="toc-group"><summary>06 · 재귀와 풀이</summary>
+<div class="toc-links"><a href="#algo-ch06">재귀</a>
+<a href="#algo-practice">문제 풀이 루틴</a>
+</div>
+</details>
+<a href="#algo-glance">그림과 표로 한눈에</a>
+<a href="#algorithm-extra">시간 복잡도</a>
+<a href="#algo-deeper">탐색·최적화 심화</a>
+<a href="#algo-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="algo-start">
+<h1>자료구조와 알고리즘</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">🧩</span>
+<p><strong>처음부터 가장 빠른 풀이를 떠올리지 못해도 괜찮아요.</strong>
+<br>먼저 작은 예제로 정확한 답을 만드는 방법을 찾고, 입력 크기가 커질 때 느려지는 지점을 살펴 개선합니다.</p>
+</section>
+<section class="lesson-section field-section" id="algo-ch01"><div class="section-number">01</div>
+<div><h2>문제를 작은 단계로 나누기</h2>
+<p>알고리즘 문제를 읽으면 먼저 입력, 원하는 출력, 규칙, 예외를 분리해요. 예제 두세 개를 손으로 풀면 숨어 있는 조건을 찾을 수 있습니다.</p>
+<ol class="field-list"><li>문제를 내 말로 다시 설명합니다.</li>
+<li>입력과 결과의 자료형·범위를 확인합니다.</li>
+<li>작은 예제와 경계값을 손으로 풉니다.</li>
+<li>가장 단순하고 정확한 풀이를 작성합니다.</li>
+<li>큰 입력에서 시간과 메모리가 충분한지 확인합니다.</li>
+</ol>
+<h3 id="algo-big-o">Big O: 입력이 커질 때 얼마나 늘어날까?</h3>
+<p>Big O 표기법은 입력 크기 n이 커질 때 작업량이 어떻게 증가하는지 대략 표현해요. 실제 실행 시간은 컴퓨터와 데이터에 따라 다르지만, 풀이의 증가 추세를 비교하는 데 도움이 됩니다.</p>
+<table class="study-table"><thead><tr><th>복잡도</th>
+<th>이름</th>
+<th>느낌</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody><tr><td>O(1)</td>
+<td>상수</td>
+<td>입력 크기에 거의 영향 없음</td>
+<td>배열의 인덱스로 한 칸 읽기</td>
+</tr>
+<tr><td>O(log n)</td>
+<td>로그</td>
+<td>단계마다 범위를 크게 줄임</td>
+<td>정렬된 자료의 이진 탐색</td>
+</tr>
+<tr><td>O(n)</td>
+<td>선형</td>
+<td>한 번 훑기</td>
+<td>최댓값 찾기</td>
+</tr>
+<tr><td>O(n log n)</td>
+<td>선형 로그</td>
+<td>효율적인 일반 정렬</td>
+<td>병합 정렬의 시간</td>
+</tr>
+<tr><td>O(n²)</td>
+<td>제곱</td>
+<td>모든 쌍을 비교하면 빠르게 커짐</td>
+<td>이중 반복문</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="algo-ch02"><div class="section-number">02</div>
+<div><h2>배열과 목록: 순서가 있는 데이터를 담기</h2>
+<p>배열은 여러 값을 순서대로 저장하고 인덱스로 빠르게 접근해요. 보통 크기가 고정되어 있습니다. List는 데이터를 추가하거나 제거하기 편한 목록 인터페이스로, 내부 구현에 따라 성능이 달라질 수 있어요.</p>
+<div class="field-pipeline"><div><b>index 0</b>
+<small>첫 값</small>
+</div>
+<i>→</i>
+<div><b>index 1</b>
+<small>다음 값</small>
+</div>
+<i>→</i>
+<div><b>index 2</b>
+<small>그 다음</small>
+</div>
+<i>→</i>
+<div><b>…</b>
+<small>순서 유지</small>
+</div>
+</div>
+<table class="study-table"><thead><tr><th>작업</th>
+<th>배열·ArrayList에서</th>
+<th>생각할 점</th>
+</tr>
+</thead>
+<tbody><tr><td>인덱스로 접근</td>
+<td>빠름</td>
+<td>유효 범위는 0부터 크기-1</td>
+</tr>
+<tr><td>끝에 추가</td>
+<td>보통 빠름</td>
+<td>내부 확장 시 복사가 생길 수 있음</td>
+</tr>
+<tr><td>중간 삽입·삭제</td>
+<td>뒤 원소 이동 필요</td>
+<td>자주 하는 작업인지 검토</td>
+</tr>
+<tr><td>값 찾기</td>
+<td>순서대로 보면 O(n)</td>
+<td>정렬 여부와 다른 구조 검토</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="algo-ch03"><div class="section-number">03</div>
+<div><h2>탐색과 정렬: 찾기 쉬운 순서 만들기</h2>
+<p>선형 탐색은 처음부터 끝까지 확인해요. 정렬된 목록에서는 중간 값을 기준으로 범위를 반씩 줄이는 이진 탐색을 사용할 수 있습니다. 대신 이진 탐색은 데이터가 정렬되어 있어야 해요.</p>
+<h3 id="algo-sort">정렬은 값을 일정한 규칙으로 나열하기</h3>
+<p>정렬에는 비교 횟수뿐 아니라 안정성, 메모리 사용량, 데이터의 기존 순서 보존 같은 성질도 있어요. 실무에서는 직접 정렬 알고리즘을 구현하기보다 표준 라이브러리를 사용하고, 정렬 기준을 명확히 하는 경우가 많습니다.</p>
+<table class="study-table"><thead><tr><th>방법</th>
+<th>전제</th>
+<th>대략적인 시간</th>
+</tr>
+</thead>
+<tbody><tr><td>선형 탐색</td>
+<td>정렬 불필요</td>
+<td>O(n)</td>
+</tr>
+<tr><td>이진 탐색</td>
+<td>정렬된 데이터</td>
+<td>O(log n)</td>
+</tr>
+<tr><td>단순한 이중 반복 정렬</td>
+<td>작은 예제 학습에 적합</td>
+<td>O(n²)</td>
+</tr>
+<tr><td>표준 라이브러리 정렬</td>
+<td>비교 기준을 제공</td>
+<td>대체로 O(n log n)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="algo-ch04"><div class="section-number">04</div>
+<div><h2>자료구조: 작업 방식에 맞는 그릇 고르기</h2>
+<p>같은 데이터라도 어떤 순서로 넣고 꺼낼지에 따라 알맞은 구조가 달라요. 데이터를 자주 추가하는지, 중복이 필요한지, 키로 바로 찾고 싶은지를 기준으로 고릅니다.</p>
+<h3>Stack과 Queue</h3>
+<p>Stack은 마지막에 넣은 것을 먼저 꺼내는 LIFO 구조예요. 접시 더미처럼 가장 위의 접시를 먼저 꺼냅니다. Queue는 먼저 들어온 것을 먼저 처리하는 FIFO 구조로, 줄 서기와 비슷해요.</p>
+<h3 id="algo-map">Set과 Map</h3>
+<table class="study-table"><thead><tr><th>구조</th>
+<th>규칙</th>
+<th>실생활 예</th>
+<th>Java 예</th>
+</tr>
+</thead>
+<tbody><tr><td>Stack</td>
+<td>나중에 넣은 값부터 꺼냄</td>
+<td>되돌리기 이력</td>
+<td>Deque</td>
+</tr>
+<tr><td>Queue</td>
+<td>먼저 온 값을 먼저 꺼냄</td>
+<td>작업 대기열</td>
+<td>Queue</td>
+</tr>
+<tr><td>Set</td>
+<td>중복 없는 값 모음</td>
+<td>유일한 태그 목록</td>
+<td>HashSet</td>
+</tr>
+<tr><td>Map</td>
+<td>키로 값을 찾음</td>
+<td>회원 ID로 회원 조회</td>
+<td>HashMap</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="algo-ch05"><div class="section-number">05</div>
+<div><h2>트리와 그래프: 계층과 관계 표현하기</h2>
+<p>트리는 위아래 계층 구조를 표현해요. 파일 폴더, 조직도, HTML 요소 구조가 예입니다. 그래프는 여러 정점이 간선으로 연결된 구조로 도로망, 친구 관계, 서비스 간 의존을 표현할 수 있습니다.</p>
+<h3 id="algo-graph">너비 우선 탐색과 깊이 우선 탐색</h3>
+<p>너비 우선 탐색(BFS)은 가까운 이웃부터 넓게 살펴보고, 깊이 우선 탐색(DFS)은 한 경로를 따라 깊게 들어간 뒤 돌아옵니다. BFS는 보통 Queue, DFS는 재귀나 Stack으로 구현할 수 있어요.</p>
+<table class="study-table"><thead><tr><th>문제</th>
+<th>자주 쓰는 구조·방법</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody><tr><td>가장 적은 간선 수의 경로</td>
+<td>가중치 없는 그래프 BFS</td>
+<td>미로의 최단 이동 수</td>
+</tr>
+<tr><td>모든 연결 구역 세기</td>
+<td>DFS 또는 BFS</td>
+<td>섬의 개수</td>
+</tr>
+<tr><td>계층의 부모·자식 찾기</td>
+<td>트리 순회</td>
+<td>폴더 구조</td>
+</tr>
+<tr><td>가중치가 있는 최단 거리</td>
+<td>다익스트라 등</td>
+<td>도로 거리</td>
+</tr>
+</tbody>
+</table>
+<p>알고리즘을 고를 때는 그래프가 방향이 있는지, 간선에 비용이 있는지, 사이클이 가능한지 확인해야 합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="algo-ch06"><div class="section-number">06</div>
+<div><h2>재귀와 문제 풀이 습관</h2>
+<p>재귀는 함수가 더 작은 입력의 자기 자신을 호출하는 방식이에요. 반드시 끝나는 기저 조건이 있어야 합니다. 입력이 줄어들지 않거나 기저 조건이 빠지면 무한 호출과 스택 오류가 날 수 있어요.</p>
+<h3 id="algo-practice">막힐 때 사용할 풀이 루틴</h3>
+<ol class="field-list"><li>문제 설명을 한 문장으로 바꾸고 입력 범위를 표시합니다.</li>
+<li>작은 입력을 직접 풀어 규칙과 예외를 찾습니다.</li>
+<li>자료구조와 단순한 알고리즘을 먼저 선택합니다.</li>
+<li>정확성을 작은 테스트로 확인합니다.</li>
+<li>복잡도를 계산하고 꼭 필요한 부분을 개선합니다.</li>
+</ol>
+<p>입력 크기 제한은 어떤 복잡도가 가능한지 알려 주는 힌트예요. 어려운 기법부터 끼워 맞추기보다 정확한 풀이를 만든 뒤 점진적으로 개선하는 습관이 중요합니다.</p>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="algo-glance"><div class="visual-kicker">ALGORITHM FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>찾고, 담고, 연결하는<br><span>방법을 골라요</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>요구하는 동작에서 자료구조 선택</h2>
+<p>저장 방식은 이후 연산 속도와 코드 모양에 영향을 줘요.</p>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>주요 작업</th>
+<th>후보 구조</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr><td>순서대로 처리</td>
+<td>List / Queue</td>
+<td>순서를 유지</td>
+</tr>
+<tr><td>마지막 작업 취소</td>
+<td>Stack</td>
+<td>최근 항목부터 복구</td>
+</tr>
+<tr><td>중복 검사</td>
+<td>Set</td>
+<td>값의 존재 여부 확인</td>
+</tr>
+<tr><td>식별자로 조회</td>
+<td>Map</td>
+<td>키로 대응 값을 검색</td>
+</tr>
+<tr><td>관계·경로 탐색</td>
+<td>Graph + BFS/DFS</td>
+<td>연결을 따라 이동</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">02</span>
+<div><h2>입력이 커지면 차이가 커져요</h2>
+<p>속도 개선 전후를 생각할 때 증가율을 비교합니다.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>O(1)</b>
+<small>한 번 접근</small>
+</div>
+<i>→</i>
+<div><b>O(log n)</b>
+<small>절반씩 줄임</small>
+</div>
+<i>→</i>
+<div><b>O(n)</b>
+<small>한 번 훑음</small>
+</div>
+<i>→</i>
+<div><b>O(n²)</b>
+<small>모든 쌍 비교</small>
+</div>
+</div>
+</section>
+</section>
+<section class="lesson-section" id="algorithm-extra"><div class="section-number">더 알아보기</div><div><h2>입력 크기가 커질 때 작업량 비교하기</h2><p>시간 복잡도는 초 단위 실행 시간이 아니라 입력 크기 n에 따라 작업량이 커지는 모양을 나타냅니다. n이 1,000일 때 O(log n)은 약 10단계, O(n)은 최대 1,000회, O(n²)은 약 1,000,000회 수준일 수 있어요.</p><table class="study-table"><thead><tr><th>복잡도</th><th>예시</th><th>조건</th></tr></thead><tbody><tr><td>O(1)</td><td>배열 인덱스로 읽기</td><td>위치가 주어짐</td></tr><tr><td>O(log n)</td><td>이진 탐색</td><td>정렬된 데이터</td></tr><tr><td>O(n)</td><td>선형 탐색</td><td>전체 확인</td></tr><tr><td>O(n²)</td><td>모든 쌍 비교</td><td>중첩 반복</td></tr></tbody></table><p>Big O만으로 고르지 말고 입력 크기와 정렬 여부, 갱신 빈도, 메모리 사용을 함께 고려하세요. 반복 횟수와 반복 안의 작업량을 따로 적으면 분석하기 쉽습니다.</p></div></section>
+<section class="lesson-section field-section" id="algo-deeper"><div class="section-number">심화</div><div><h2>문제 구조에 맞는 탐색과 최적화</h2><h3>이진 탐색은 구간의 규칙을 지켜요</h3><p>정렬된 배열에서 중간값을 확인하고 탐색 범위를 절반씩 줄입니다. 반복할 때마다 정답이 구간 안에 있다는 조건을 유지하고, [low, high)처럼 오른쪽 끝을 제외하는 구간을 쓰면 경계 계산이 분명해집니다. 빈 배열, 값이 맨 앞이나 맨 뒤에 있는 경우, 중복 값이 있는 경우를 직접 추적해 보세요.</p><h3>동적 계획법과 그리디를 구분해요</h3><p>동적 계획법은 작은 문제의 답을 저장해 중복 계산을 줄입니다. 상태·점화식·초기값·계산 순서를 먼저 정하세요. 그리디는 매 순간의 선택이 전체 최적해로 이어진다는 근거가 있어야 하므로 반례를 찾아 확인해야 합니다.</p><ul class="field-list"><li>입력 크기와 시간·메모리 제한부터 확인합니다.</li><li>반복 횟수뿐 아니라 반복 안의 작업량도 셉니다.</li><li>작은 입력으로 정답을 손으로 계산해 비교합니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="algo-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>알고리즘 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>알고리즘</td>
+<td>입력을 원하는 결과로 바꾸는 단계적인 절차.</td>
+</tr>
+<tr><td>자료구조</td>
+<td>데이터를 저장하고 찾는 방식.</td>
+</tr>
+<tr><td>Big O</td>
+<td>입력이 커질 때 작업량 증가 추세를 나타내는 표기.</td>
+</tr>
+<tr><td>재귀</td>
+<td>함수가 더 작은 문제를 자기 자신에게 맡기는 방식.</td>
+</tr>
+<tr><td>그래프</td>
+<td>정점과 정점 사이 연결을 표현한 구조.</td>
+</tr>
+<tr><td>BFS</td>
+<td>가까운 이웃부터 너비 방향으로 탐색하는 방법.</td>
+</tr>
+<tr><td>DFS</td>
+<td>한 경로를 따라 깊이 들어가 탐색하는 방법.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

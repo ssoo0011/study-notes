@@ -1,0 +1,318 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>컴퓨터 기초 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">COMPUTER · CONTENTS</p>
+<h2>컴퓨터 기초</h2>
+<nav aria-label="컴퓨터 기초 목차"><a class="field-start-link" href="#cs-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 데이터 표현</summary>
+<div class="toc-links"><a href="#cs-ch01">비트와 바이트</a>
+<a href="#cs-text">숫자·문자·파일</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · CPU와 메모리</summary>
+<div class="toc-links"><a href="#cs-ch02">명령을 실행하는 CPU</a>
+<a href="#cs-memory">메모리 계층</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 운영체제</summary>
+<div class="toc-links"><a href="#cs-ch03">프로세스와 스레드</a>
+<a href="#cs-os">파일과 자원</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 동시성</summary>
+<div class="toc-links"><a href="#cs-ch04">병렬과 동시 실행</a>
+<a href="#cs-race">경쟁 상태</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 저장과 성능</summary>
+<div class="toc-links"><a href="#cs-ch05">저장 장치</a>
+<a href="#cs-performance">캐시와 병목</a>
+</div>
+</details>
+<a href="#cs-glance">그림과 표로 한눈에</a>
+<a href="#cs-extra">프로세스와 메모리</a>
+<a href="#cs-deeper">운영체제 심화</a>
+<a href="#cs-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="cs-start">
+<h1>컴퓨터 기초</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">🧠</span>
+<p><strong>처음에는 회로 설계까지 알 필요 없어요.</strong>
+<br>개발에 필요한 수준으로 데이터가 저장되고, 프로그램이 실행되고, 여러 일이 함께 진행되는 기본 그림부터 잡습니다.</p>
+</section>
+<section class="lesson-section field-section" id="cs-ch01"><div class="section-number">01</div>
+<div><h2>비트와 바이트: 컴퓨터가 다루는 가장 작은 표기</h2>
+<p>컴퓨터 내부 데이터는 전기 신호의 두 상태를 바탕으로 표현해요. 이 한 자리를 <strong>비트(bit)</strong>
+라고 하고, 보통 8비트를 묶어 <strong>바이트(byte)</strong>
+라고 부릅니다. 비트들을 조합해 숫자, 문자, 이미지 같은 정보를 표현해요.</p>
+<div class="field-code"><div class="field-code-label">2진수와 10진수</div>
+<pre><code>2진수 00000101 = 10진수 5
+8비트 한 묶음 = 1바이트
+1바이트로 표현 가능한 서로 다른 패턴 = 256가지</code>
+</pre>
+</div>
+<h3 id="cs-text">숫자·문자·파일도 결국 약속된 데이터</h3>
+<p>비트만 보면 그 자체로 글자나 사진이라는 뜻은 없어요. 어떤 문자 인코딩을 쓸지, 파일 형식이 무엇인지 약속을 알아야 바르게 해석할 수 있습니다. UTF-8은 웹에서 널리 쓰이는 문자 인코딩 중 하나예요.</p>
+<table class="study-table"><thead><tr><th>종류</th>
+<th>어떻게 표현하나?</th>
+<th>개발 중 만나는 곳</th>
+</tr>
+</thead>
+<tbody><tr><td>정수</td>
+<td>비트 패턴에 부호·범위 규칙 적용</td>
+<td>정수 오버플로</td>
+</tr>
+<tr><td>실수</td>
+<td>정해진 정밀도의 근삿값</td>
+<td>소수 비교 오차</td>
+</tr>
+<tr><td>문자</td>
+<td>문자와 숫자를 연결한 인코딩</td>
+<td>깨진 한글·잘못된 인코딩</td>
+</tr>
+<tr><td>이미지·음성</td>
+<td>파일 형식에 맞춘 픽셀·샘플 정보</td>
+<td>디코딩·압축</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="cs-ch02"><div class="section-number">02</div>
+<div><h2>CPU와 메모리: 명령을 읽고 값을 꺼내 실행해요</h2>
+<p>CPU는 프로그램의 명령을 실행하는 장치예요. 계산뿐 아니라 메모리에서 명령과 데이터를 읽고, 결과를 다시 기록합니다. 메모리(RAM)는 실행 중인 프로그램이 빠르게 읽고 쓰는 작업 공간이에요.</p>
+<div class="field-flow"><span>저장 장치<small>프로그램 파일</small>
+</span>
+<b>→ 불러오기</b>
+<strong>메모리<small>실행 중인 코드·값</small>
+</strong>
+<b>↔</b>
+<span>CPU<small>명령 실행</small>
+</span>
+</div>
+<h3 id="cs-memory">메모리에는 빠르기와 크기의 층이 있어요</h3>
+<p>CPU 안의 레지스터와 캐시는 매우 빠르고 작아요. RAM은 더 크지만 전원이 꺼지면 내용을 잃고, SSD는 더 오래 보관하지만 RAM보다 느립니다. 자주 쓰는 데이터를 가까운 빠른 저장소에 두는 이유입니다.</p>
+<table class="study-table"><thead><tr><th>저장 공간</th>
+<th>특징</th>
+<th>일상 비유</th>
+</tr>
+</thead>
+<tbody><tr><td>레지스터·캐시</td>
+<td>매우 빠르고 용량이 작음</td>
+<td>손에 들고 있는 메모</td>
+</tr>
+<tr><td>RAM</td>
+<td>실행 중 빠르게 접근, 휘발성</td>
+<td>책상 위 작업 공간</td>
+</tr>
+<tr><td>SSD·디스크</td>
+<td>비교적 크고 전원이 꺼져도 보존</td>
+<td>서랍과 파일 캐비닛</td>
+</tr>
+</tbody>
+</table>
+<p>프로그램이 너무 많은 메모리를 사용하면 시스템이 느려지거나 종료될 수 있어요. 메모리 누수는 더 이상 필요하지 않은 메모리를 프로그램이 계속 붙잡고 놓지 않는 문제입니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cs-ch03"><div class="section-number">03</div>
+<div><h2>운영체제: 프로그램과 하드웨어 사이의 관리자</h2>
+<p>운영체제(OS)는 CPU·메모리·파일·네트워크 같은 자원을 프로그램들이 사용할 수 있게 관리해요. Windows, macOS, Linux가 운영체제의 예입니다.</p>
+<p>실행 중인 프로그램을 <strong>프로세스</strong>
+라고 부르고, 프로세스 안에서 실행되는 작업의 흐름을 <strong>스레드</strong>
+라고 해요. 하나의 프로세스에 여러 스레드가 있을 수 있습니다.</p>
+<h3 id="cs-os">파일, 권한, 시스템 호출</h3>
+<p>프로그램은 운영체제의 기능을 통해 파일을 읽고, 네트워크 연결을 만들고, 새 메모리를 요청해요. 운영체제에 서비스를 요청하는 경계를 시스템 호출이라고 합니다. 사용자 계정과 권한은 어떤 자원에 접근할지 제한합니다.</p>
+<table class="study-table"><thead><tr><th>개념</th>
+<th>설명</th>
+<th>개발에서 만나는 예</th>
+</tr>
+</thead>
+<tbody><tr><td>프로세스</td>
+<td>운영체제가 관리하는 실행 프로그램</td>
+<td>서버 앱 프로세스 확인</td>
+</tr>
+<tr><td>스레드</td>
+<td>프로세스 안에서 실행되는 흐름</td>
+<td>동시에 요청 처리</td>
+</tr>
+<tr><td>파일 디스크립터</td>
+<td>열린 파일·소켓 등을 가리키는 번호</td>
+<td>열린 연결이 너무 많음</td>
+</tr>
+<tr><td>권한</td>
+<td>사용자·프로그램의 접근 범위</td>
+<td>파일 접근 거부</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="cs-ch04"><div class="section-number">04</div>
+<div><h2>동시성: 여러 작업이 겹쳐 진행될 때</h2>
+<p>동시성은 여러 일을 번갈아 처리해 동시에 진행되는 것처럼 보이게 하는 방식이고, 병렬성은 여러 CPU 코어 등이 실제 같은 시점에 일을 수행하는 것을 말해요. 동시에 작업한다고 언제나 더 빨라지는 것은 아닙니다.</p>
+<p>여러 스레드가 같은 값을 읽고 수정하면 실행 순서에 따라 결과가 달라지는 경쟁 상태가 생길 수 있어요. 예를 들어 두 요청이 동시에 재고 1개를 읽고 각각 주문을 승인하면 재고가 잘못 처리될 수 있습니다.</p>
+<h3 id="cs-race">공유 데이터는 규칙을 정해 다뤄요</h3>
+<table class="study-table"><thead><tr><th>문제</th>
+<th>무슨 일이 생기나?</th>
+<th>대응 아이디어</th>
+</tr>
+</thead>
+<tbody><tr><td>경쟁 상태</td>
+<td>실행 순서에 따라 결과가 달라짐</td>
+<td>공유 변경을 동기화·원자 처리</td>
+</tr>
+<tr><td>교착 상태</td>
+<td>서로 상대가 가진 자원을 기다려 멈춤</td>
+<td>자원 획득 순서와 범위를 단순화</td>
+</tr>
+<tr><td>기아</td>
+<td>특정 작업이 자원을 오래 받지 못함</td>
+<td>공정한 스케줄링·제한 시간 고려</td>
+</tr>
+</tbody>
+</table>
+<p>동시성 버그는 매번 재현되지 않을 수 있어요. 공유 상태를 줄이고, 원자적 연산이나 동기화 도구를 알맞게 사용하며, 실제 다중 요청 테스트도 필요합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cs-ch05"><div class="section-number">05</div>
+<div><h2>저장 장치와 성능: 느린 곳이 전체를 기다리게 해요</h2>
+<p>CPU 계산은 빠르지만 디스크나 네트워크 응답은 상대적으로 오래 걸릴 수 있어요. 앱이 데이터베이스 응답을 기다리는 시간이 길면 CPU가 한가해도 요청 전체는 느릴 수 있습니다. 성능을 고치려면 먼저 어디에서 시간이 쓰이는지 측정해야 해요.</p>
+<h3 id="cs-performance">캐시와 병목</h3>
+<p>캐시는 다시 사용할 가능성이 높은 결과를 잠시 저장해 더 빨리 제공하는 방식이에요. 원본 데이터가 바뀌면 캐시가 오래된 값을 줄 수 있으므로 만료·갱신 규칙도 필요합니다. 병목은 시스템 처리 속도를 가장 크게 제한하는 지점이에요.</p>
+<table class="study-table"><thead><tr><th>증상</th>
+<th>가능한 병목</th>
+<th>확인할 지표</th>
+</tr>
+</thead>
+<tbody><tr><td>계산이 오래 걸림</td>
+<td>비효율 알고리즘·CPU</td>
+<td>CPU 사용률, 실행 시간</td>
+</tr>
+<tr><td>메모리 부족</td>
+<td>큰 데이터·누수</td>
+<td>힙 크기, 할당량</td>
+</tr>
+<tr><td>DB 응답 대기</td>
+<td>쿼리·인덱스·연결 수</td>
+<td>쿼리 시간, 커넥션 대기</td>
+</tr>
+<tr><td>외부 API 대기</td>
+<td>네트워크 지연·상대 서비스</td>
+<td>요청 지연, 타임아웃</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="cs-glance"><div class="visual-kicker">COMPUTER FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>저장된 프로그램이<br><span>실행되는 여정</span>
+</h1>
+<p class="visual-intro">파일로 있던 프로그램이 메모리에 올라와 CPU에서 실행되고, 운영체제에 자원을 요청하는 과정을 봐요.</p>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>코드에서 실행까지</h2>
+<p>저장·적재·실행·입출력은 서로 이어진 과정이에요.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>소스 코드</b>
+<small>파일로 저장</small>
+</div>
+<i>→</i>
+<div><b>실행 파일</b>
+<small>컴파일</small>
+</div>
+<i>→</i>
+<div><b>메모리</b>
+<small>프로세스 생성</small>
+</div>
+<i>→</i>
+<div><b>CPU</b>
+<small>명령 수행</small>
+</div>
+<i>→</i>
+<div><b>운영체제</b>
+<small>파일·네트워크</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>구성 요소</th>
+<th>주요 역할</th>
+</tr>
+</thead>
+<tbody><tr><td>CPU</td>
+<td>명령을 실행하고 계산</td>
+</tr>
+<tr><td>메모리</td>
+<td>실행 중 코드와 데이터를 보관</td>
+</tr>
+<tr><td>운영체제</td>
+<td>자원과 프로그램 실행을 관리</td>
+</tr>
+<tr><td>디스크</td>
+<td>파일과 데이터를 오래 보관</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">02</span>
+<div><h2>한 번 실행은 혼자만의 일이 아니에요</h2>
+<p>운영체제는 여러 프로그램 사이에서 한정된 자원을 나눠요.</p>
+</div>
+</div>
+<div class="field-flow"><span>프로그램 A<small>스레드 실행</small>
+</span>
+<strong>운영체제<small>CPU·메모리 배분</small>
+</strong>
+<span>프로그램 B<small>스레드 실행</small>
+</span>
+</div>
+</section>
+</section>
+<section class="lesson-section" id="cs-extra"><div class="section-number">더 알아보기</div><div><h2>프로세스와 메모리는 함께 움직여요</h2><p>운영체제는 프로그램을 프로세스로 실행하며 코드·스택·힙 같은 메모리와 실행 상태를 관리합니다. 함수 호출 정보와 지역 값은 보통 스택에, 실행 중 동적으로 만든 데이터는 힙에 놓일 수 있어요.</p><table class="study-table"><thead><tr><th>영역</th><th>역할</th></tr></thead><tbody><tr><td>코드</td><td>실행할 명령</td></tr><tr><td>스택</td><td>함수 호출과 지역 변수</td></tr><tr><td>힙</td><td>동적으로 할당한 데이터</td></tr></tbody></table><p>RAM은 빠른 작업 공간이지만 전원이 꺼지면 내용이 사라지고, SSD는 상대적으로 느려도 파일을 보존합니다. CPU가 바쁘지 않아도 디스크나 네트워크를 기다리면 프로그램은 느릴 수 있으므로 자원별 대기를 나눠 살펴보세요.</p></div></section>
+<section class="lesson-section field-section" id="cs-deeper"><div class="section-number">심화</div><div><h2>운영체제가 프로그램을 실행하는 방식</h2><h3>프로세스와 스레드는 메모리를 나누어 써요</h3><p>프로세스는 실행 중인 프로그램의 주소 공간과 자원 묶음이고, 스레드는 명령을 실행하는 흐름입니다. 같은 프로세스의 스레드는 메모리를 공유할 수 있어요. 여러 흐름이 같은 값을 동시에 바꾸면 경쟁 상태가 생기므로 잠금이나 메시지 전달로 접근 규칙을 정합니다. 잠금 순서가 꼬이면 교착 상태가 생길 수 있습니다.</p><h3>가상 메모리와 캐시는 속도 차이를 감춰요</h3><p>프로그램은 가상 주소를 사용하고 운영체제와 하드웨어가 실제 메모리와 연결합니다. 가까운 주소를 순서대로 읽으면 캐시 효율이 높아집니다. 반면 연결 리스트처럼 메모리를 흩어 다니면 느려질 수 있어요. 디스크와 네트워크 대기는 CPU 연산과 다른 병목이므로 각각 구분해 측정해야 합니다.</p><ul class="field-list"><li>병목을 측정한 뒤 최적화합니다.</li><li>CPU·메모리·디스크·네트워크 사용량을 나누어 봅니다.</li><li>공유 데이터에 대한 동시 접근 규칙을 기록합니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="cs-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>컴퓨터 기초 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>비트</td>
+<td>0 또는 1을 표현하는 데이터의 기본 단위.</td>
+</tr>
+<tr><td>바이트</td>
+<td>보통 8비트를 묶어 부르는 단위.</td>
+</tr>
+<tr><td>CPU</td>
+<td>프로그램 명령을 실행하는 처리 장치.</td>
+</tr>
+<tr><td>메모리</td>
+<td>실행 중인 코드와 데이터를 빠르게 읽고 쓰는 공간.</td>
+</tr>
+<tr><td>운영체제</td>
+<td>하드웨어 자원과 프로그램 실행을 관리하는 소프트웨어.</td>
+</tr>
+<tr><td>프로세스</td>
+<td>운영체제에서 실행 중인 프로그램.</td>
+</tr>
+<tr><td>스레드</td>
+<td>프로세스 안에서 실행되는 작업 흐름.</td>
+</tr>
+<tr><td>캐시</td>
+<td>다시 쓸 데이터를 가까운 곳에 임시 보관하는 방식.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

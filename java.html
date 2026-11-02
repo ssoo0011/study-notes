@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="코드를 한 줄도 몰라도 따라오는 Java 기초 학습 노트">
+  <title>Java 기초 · 개발 공부 노트</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/visual-guide.css">
+  <link rel="stylesheet" href="css/course-single.css">
+  <link rel="stylesheet" href="css/java-course.css">
+  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page">
+  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+  <div class="lesson-layout course-onepage">
+    <aside class="lesson-sidebar course-sidebar">
+      <p class="eyebrow">JAVA · CONTENTS</p>
+<h2>Java 기초</h2>
+      <nav aria-label="Java 전체 목차">
+        <a class="java-start-link" href="#java-start">처음 오셨나요?</a>
+        <details class="toc-group"><summary>01 · 자바와 프로그램</summary>
+<div class="toc-links"><a href="#java-ch01">컴퓨터에게 일 시키기</a>
+<a href="#java-code">첫 Java 코드</a>
+<a href="#java-run">코드가 실행되는 과정</a>
+</div>
+</details>
+        <details class="toc-group"><summary>02 · 값과 변수</summary>
+<div class="toc-links"><a href="#java-ch02">변수는 이름표</a>
+<a href="#java-types">자료형과 값</a>
+<a href="#java-convert">형 변환</a>
+</div>
+</details>
+        <details class="toc-group"><summary>03 · 조건과 반복</summary>
+<div class="toc-links"><a href="#java-ch03">조건문</a>
+<a href="#java-loop">반복문</a>
+<a href="#java-branch-check">연습 문제</a>
+</div>
+</details>
+        <details class="toc-group"><summary>04 · 메서드와 배열</summary>
+<div class="toc-links"><a href="#java-ch04">메서드</a>
+<a href="#java-array">배열</a>
+</div>
+</details>
+        <details class="toc-group"><summary>05 · 클래스와 객체</summary>
+<div class="toc-links"><a href="#java-ch05">클래스와 인스턴스</a>
+<a href="#java-encapsulation">캡슐화</a>
+</div>
+</details>
+        <details class="toc-group"><summary>06 · 상속과 인터페이스</summary>
+<div class="toc-links"><a href="#java-ch06">상속</a>
+<a href="#java-interface">인터페이스와 다형성</a>
+</div>
+</details>
+        <details class="toc-group"><summary>07 · 예외와 패키지</summary>
+<div class="toc-links"><a href="#java-ch07">예외 처리</a>
+<a href="#java-package">패키지와 import</a>
+</div>
+</details>
+        <details class="toc-group"><summary>08 · 컬렉션과 제네릭</summary>
+<div class="toc-links"><a href="#java-ch08">컬렉션</a>
+<a href="#java-generic">제네릭</a>
+</div>
+</details>
+        <details class="toc-group"><summary>09 · 람다와 스트림</summary>
+<div class="toc-links"><a href="#java-ch09">람다식</a>
+<a href="#java-stream">스트림</a>
+</div>
+</details>
+        <a href="#java-glance">그림과 표로 한눈에</a>
+<a href="#java-extra">객체 비교와 해시</a>
+<a href="#java-deeper">객체 수명 심화</a>
+<a href="#java-terms">초보 용어사전</a></nav>
+    </aside>
+    <main class="lesson-content course-content java-content">
+      <section class="lesson-hero course-title" id="java-start">
+<h1>Java</h1>
+</section>
+      <section class="callout java-callout"><span class="callout-icon">☕</span>
+<p><strong>Java는 커피 이름이 아니라, 컴퓨터에게 일을 부탁하는 언어예요.</strong>
+<br>처음엔 모든 문법을 외우려고 하지 않아도 괜찮아요. 코드를 읽을 때 “무엇을 저장하지?”, “언제 실행하지?”, “누가 이 일을 맡지?”라고 질문하면 길이 보입니다.</p>
+</section>
+      <section class="case-card"><p class="case-label">첫 번째 미션 · 오늘의 버그 탐정</p>
+<h2>계산기는 왜 7이 아니라 34를 보여 줬을까요?</h2>
+<p>친구가 숫자 3과 4를 입력했더니 프로그램이 34라고 답했어요. 컴퓨터가 산수를 못한 게 아니라, 입력을 숫자가 아닌 글자 두 개로 이해했을 수 있어요.</p>
+<p class="case-clue"><b>추리 질문</b>
+ 데이터의 모양(자료형)이 달라지면 같은 + 기호도 다르게 동작할까요?</p>
+<details><summary>단서와 풀이 보기</summary>
+<p>맞아요. 숫자 <code>3 + 4</code>
+는 덧셈이지만, 문자열 <code>"3" + "4"</code>
+는 글자를 이어 붙여 <code>"34"</code>
+가 됩니다. 자바에서는 값이 어떤 종류인지 자료형으로 구분해요. 그래서 변수와 자료형부터 차근차근 살펴봅니다.</p>
+</details>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch01"><div class="section-number">01</div>
+<div><h2>자바와 프로그램: 컴퓨터에게 일을 시키는 방법</h2>
+<p>프로그램은 컴퓨터가 따라 할 수 있도록 적어 둔 <strong>명령의 묶음</strong>
+이에요. Java(자바)는 사람이 비교적 읽기 쉬운 형태로 명령을 작성하도록 만든 프로그래밍 언어입니다.</p>
+<h3>컴퓨터는 코드를 그냥 읽을 수 있나요?</h3>
+<p>사람이 쓰는 Java 코드를 컴퓨터가 바로 실행하는 것은 아니에요. 개발 도구가 코드를 검사하고 바이트코드라는 중간 형태로 바꾸면, JVM(자바 가상 머신)이 그 코드를 실행합니다. 덕분에 같은 바이트코드를 여러 운영체제에서 실행할 수 있어요.</p>
+<div class="java-code-card" id="java-code"><div class="code-label">첫 만남 · 화면에 인사하기</div>
+<pre><code>public class Hello {
+    public static void main(String[] args) {
+        System.out.println("안녕, Java!");
+    }
+}</code>
+</pre>
+<p><code>System.out.println</code>
+은 괄호 안의 내용을 화면에 출력하라는 명령이에요. 문장 끝의 세미콜론 <code>;</code>
+은 “이 명령은 여기서 끝”이라는 표시입니다.</p>
+</div>
+<div class="java-process" id="java-run"><div><b>① 작성</b>
+<span>Hello.java<br>사람이 읽는 코드</span>
+</div>
+<i>→</i>
+<div><b>② 컴파일</b>
+<span>javac<br>문법 검사·변환</span>
+</div>
+<i>→</i>
+<div><b>③ 바이트코드</b>
+<span>Hello.class<br>중간 코드</span>
+</div>
+<i>→</i>
+<div><b>④ 실행</b>
+<span>JVM<br>명령 수행</span>
+</div>
+</div>
+<table class="study-table"><thead><tr><th>이름</th>
+<th>쉽게 말하면</th>
+<th>하는 일</th>
+</tr>
+</thead>
+<tbody><tr><td>JDK</td>
+<td>자바 개발 도구 상자</td>
+<td>코드 작성·컴파일·실행에 필요한 도구를 제공해요.</td>
+</tr>
+<tr><td>컴파일러</td>
+<td>번역기 겸 문법 검사기</td>
+<td>Java 소스 코드를 바이트코드로 바꿔요.</td>
+</tr>
+<tr><td>JVM</td>
+<td>바이트코드를 실행하는 가상 컴퓨터</td>
+<td>운영체제에 맞게 자바 프로그램을 실행해요.</td>
+</tr>
+</tbody>
+</table>
+<p class="plain-note"><b>기억 포인트</b>
+ 소스 코드(.java) → 컴파일 → 바이트코드(.class) → JVM 실행. 개발할 때는 보통 JDK를 설치합니다.</p>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch02"><div class="section-number">02</div>
+<div><h2>값과 변수: 데이터에 이름표 붙이기</h2>
+<p>프로그램은 숫자, 문자, 참/거짓 같은 <strong>값</strong>
+을 기억하고 활용해요. 변수는 값을 담아 두고 다시 부를 수 있게 이름표를 붙인 공간입니다. 서랍에 “점수”라고 라벨을 붙여 두는 모습과 비슷해요.</p>
+<div class="java-memory"><div class="memory-label">변수 상자</div>
+<div class="memory-box"><small>이름</small>
+<b>score</b>
+</div>
+<span class="memory-arrow">←</span>
+<div class="memory-box filled"><small>값</small>
+<b>95</b>
+</div>
+</div>
+<div class="java-code-card"><div class="code-label">변수 만들기</div>
+<pre><code>int score = 95;
+String nickname = "민지";
+boolean isReady = true;</code>
+</pre>
+<p>예: <code>int</code>
+는 정수형, <code>String</code>
+은 문자열, <code>boolean</code>
+은 참 또는 거짓이에요. <code>=</code>
+는 수학의 “같다”가 아니라 오른쪽 값을 왼쪽 변수에 넣는 대입 기호입니다.</p>
+</div>
+<h3 id="java-types">자료형은 값의 종류를 알려 줘요</h3>
+<p>종류를 알면 허용되는 계산과 필요한 저장 공간을 정할 수 있습니다. 처음에는 자주 쓰는 것부터 익혀도 충분해요.</p>
+<table class="study-table"><thead><tr><th>자료형</th>
+<th>담는 값</th>
+<th>예시</th>
+<th>처음 만나는 쓰임</th>
+</tr>
+</thead>
+<tbody><tr><td><code>int</code>
+</td>
+<td>정수</td>
+<td><code>int age = 20;</code>
+</td>
+<td>나이, 개수</td>
+</tr>
+<tr><td><code>double</code>
+</td>
+<td>소수점 숫자</td>
+<td><code>double rate = 0.15;</code>
+</td>
+<td>비율, 평균</td>
+</tr>
+<tr><td><code>boolean</code>
+</td>
+<td>참 또는 거짓</td>
+<td><code>boolean open = false;</code>
+</td>
+<td>조건 판단</td>
+</tr>
+<tr><td><code>char</code>
+</td>
+<td>문자 하나</td>
+<td><code>char grade = 'A';</code>
+</td>
+<td>한 글자 기호</td>
+</tr>
+<tr><td><code>String</code>
+</td>
+<td>문자열</td>
+<td><code>String name = "하늘";</code>
+</td>
+<td>이름, 문장</td>
+</tr>
+</tbody>
+</table>
+<h3 id="java-convert">형 변환: 값의 옷 갈아입기</h3>
+<p>정수를 실수로 바꾸는 것처럼 자료형을 바꾸는 일을 <strong>형 변환</strong>
+이라고 해요. 작은 범위의 정수를 더 넓은 실수 범위에 넣을 때는 자동 변환되기도 하지만, 실수를 정수로 바꾸면 소수점 아래가 사라질 수 있어요.</p>
+<div class="java-code-card compact-code"><pre><code>double price = 12;       // 12가 12.0으로 자동 변환
+int count = (int) 3.9;   // 소수점 아래가 잘려서 3</code>
+</pre>
+</div>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch03"><div class="section-number">03</div>
+<div><h2>조건과 반복: 상황에 따라 고르고, 같은 일을 되풀이하기</h2>
+<h3>조건문은 갈림길이에요</h3>
+<p><code>if</code>
+는 조건이 참인지 확인하고, 참일 때 실행할 일을 고릅니다. <code>else</code>
+는 그렇지 않을 때의 선택지예요.</p>
+<div class="java-code-card"><div class="code-label">비가 오면 우산 챙기기</div>
+<pre><code>boolean raining = true;
+
+if (raining) {
+    System.out.println("우산을 챙겨요");
+} else {
+    System.out.println("가볍게 나가요");
+}</code>
+</pre>
+</div>
+<div class="branch-map"><div class="branch-question">비가 오나요?</div>
+<div class="branch-lines"><span>참 ↓</span>
+<span>거짓 ↓</span>
+</div>
+<div class="branch-outcomes"><b>우산 챙기기</b>
+<b>가볍게 나가기</b>
+</div>
+</div>
+<p>비교할 때는 <code>==</code>
+(같다), <code>!=</code>
+(다르다), <code>&gt;</code>
+(크다), <code>&amp;&amp;</code>
+(그리고), <code>||</code>
+(또는) 같은 연산자를 사용해요. 대입 <code>=</code>
+과 비교 <code>==</code>
+을 구분하는 게 중요합니다.</p>
+<h3 id="java-loop">반복문은 지루한 일을 대신해요</h3>
+<p>같은 명령을 여러 번 써야 한다면 반복문에게 맡깁니다. <code>for</code>
+는 반복 횟수를 알고 있을 때, <code>while</code>
+은 조건이 참인 동안 반복할 때 자주 사용해요.</p>
+<div class="java-code-card"><div class="code-label">1부터 3까지 세기</div>
+<pre><code>for (int i = 1; i &lt;= 3; i++) {
+    System.out.println(i);
+}</code>
+</pre>
+<p><code>int i = 1</code>
+에서 시작해, <code>i &lt;= 3</code>
+인 동안 실행하고, 한 번 실행할 때마다 <code>i++</code>
+로 1씩 늘려요. 출력은 1, 2, 3입니다.</p>
+</div>
+<table class="study-table"><thead><tr><th>문법</th>
+<th>스스로 물어볼 질문</th>
+<th>실수 방지 팁</th>
+</tr>
+</thead>
+<tbody><tr><td><code>if</code>
+</td>
+<td>어떤 조건에서 실행할까?</td>
+<td>조건을 괄호 <code>()</code>
+ 안에 써요.</td>
+</tr>
+<tr><td><code>for</code>
+</td>
+<td>몇 번 반복할까?</td>
+<td>시작값, 종료 조건, 증가식을 확인해요.</td>
+</tr>
+<tr><td><code>while</code>
+</td>
+<td>언제까지 반복할까?</td>
+<td>조건이 계속 참이면 무한 반복이 될 수 있어요.</td>
+</tr>
+</tbody>
+</table>
+<div class="mini-check" id="java-branch-check"><b>30초 확인</b>
+<p>위 for 문에서 조건을 <code>i &lt; 3</code>
+으로 바꾸면 몇까지 출력될까요? 정답은 1과 2예요. 반복을 시작하기 전에 조건을 먼저 확인하기 때문입니다.</p>
+</div>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch04"><div class="section-number">04</div>
+<div><h2>메서드와 배열: 일을 나누고 여러 값을 묶기</h2>
+<h3>메서드는 이름 붙인 작업이에요</h3>
+<p>계산이나 출력을 여기저기서 반복한다면, 일의 절차를 메서드로 묶어 이름을 붙일 수 있어요. 입력을 받아 처리하고 결과를 돌려주는 작은 기계라고 생각해 보세요.</p>
+<div class="java-function-map"><span>입력값</span>
+<b>→</b>
+<strong>메서드<br><small>정해 둔 일 수행</small>
+</strong>
+<b>→</b>
+<span>반환값</span>
+</div>
+<div class="java-code-card"><div class="code-label">두 숫자의 합을 반환하는 메서드</div>
+<pre><code>static int add(int a, int b) {
+    return a + b;
+}
+
+int result = add(3, 4); // result에는 7</code>
+</pre>
+</div>
+<table class="study-table"><thead><tr><th>부분</th>
+<th>뜻</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr><td>매개변수</td>
+<td>메서드가 받을 입력</td>
+<td><code>int a, int b</code>
+</td>
+</tr>
+<tr><td>반환형</td>
+<td>돌려줄 결과의 종류</td>
+<td><code>int</code>
+</td>
+</tr>
+<tr><td><code>return</code>
+</td>
+<td>결과를 돌려주고 메서드 종료</td>
+<td><code>return a + b;</code>
+</td>
+</tr>
+<tr><td><code>void</code>
+</td>
+<td>돌려줄 결과가 없음</td>
+<td>화면에 출력만 하는 메서드</td>
+</tr>
+</tbody>
+</table>
+<h3 id="java-array">배열은 같은 종류의 여러 값을 줄 세워요</h3>
+<p>점수를 다섯 개 저장하는데 변수 이름을 다섯 개 만들지 않고, 배열 한 개에 차례대로 담을 수 있어요. 칸 번호는 <strong>인덱스</strong>
+라고 부르고, 첫 칸의 번호는 0입니다.</p>
+<div class="array-row"><div><small>인덱스 0</small>
+<b>80</b>
+</div>
+<div><small>인덱스 1</small>
+<b>95</b>
+</div>
+<div><small>인덱스 2</small>
+<b>72</b>
+</div>
+<div><small>인덱스 3</small>
+<b>88</b>
+</div>
+</div>
+<div class="java-code-card compact-code"><pre><code>int[] scores = {80, 95, 72, 88};
+System.out.println(scores[0]); // 80
+System.out.println(scores.length); // 4</code>
+</pre>
+</div>
+<p>존재하지 않는 칸(예: 길이가 4인 배열의 <code>scores[4]</code>
+)에 접근하면 오류가 납니다. 칸 번호가 0부터 시작한다는 점을 꼭 기억하세요.</p>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch05"><div class="section-number">05</div>
+<div><h2>클래스와 객체: 나만의 데이터 설계도 만들기</h2>
+<p>프로그램이 커지면 값과 기능을 서로 관련 있는 것끼리 묶고 싶어요. <strong>클래스</strong>
+는 객체를 만드는 설계도, <strong>객체</strong>
+는 그 설계도로 실제 만든 대상입니다. 설계도로 자동차 여러 대를 만들 수 있는 것과 같아요.</p>
+<div class="object-map"><div class="blueprint"><small>설계도 · 클래스</small>
+<b>Profile</b>
+<span>이름, 점수</span>
+<span>인사하기()</span>
+</div>
+<div class="blueprint-arrow">만들기 →</div>
+<div class="object-instance"><small>실제 객체 · 인스턴스</small>
+<b>minjiProfile</b>
+<span>이름 = "민지"</span>
+<span>점수 = 95</span>
+</div>
+</div>
+<div class="java-code-card"><div class="code-label">설계도에서 객체 만들기</div>
+<pre><code>class Profile {
+    String name;
+    int score;
+
+    void introduce() {
+        System.out.println("안녕하세요, " + name + "입니다");
+    }
+}
+
+Profile user = new Profile(); // 객체 생성
+user.name = "민지";
+user.introduce();</code>
+</pre>
+</div>
+<p><code>new</code>
+는 설계도를 바탕으로 새 객체를 만들라는 표현입니다. 객체 안에 들어 있는 값은 <strong>필드</strong>
+, 객체가 할 수 있는 동작은 <strong>메서드</strong>
+라고 불러요.</p>
+<h3 id="java-encapsulation">캡슐화: 안쪽을 보호하고 필요한 문만 열기</h3>
+<p>점수 필드를 아무나 바꾸게 두면 150점이나 -10점도 들어올 수 있어요. 필드를 <code>private</code>
+으로 감추고, 검사하는 메서드를 통해서만 바꾸게 하는 것을 <strong>캡슐화</strong>
+라고 합니다.</p>
+<div class="java-code-card compact-code"><pre><code>class Score {
+    private int value;
+
+    public void setValue(int value) {
+        if (value &gt;= 0 &amp;&amp; value &lt;= 100) {
+            this.value = value;
+        }
+    }
+
+    public int getValue() {
+        return value;
+    }
+}</code>
+</pre>
+</div>
+<p><code>this.value</code>
+는 현재 객체가 가진 <code>value</code>
+ 필드를 가리켜요. 모든 필드에 무조건 getter/setter를 만드는 것이 정답은 아니며, 객체가 지켜야 할 규칙을 분명히 하는 것이 핵심입니다.</p>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch06"><div class="section-number">06</div>
+<div><h2>상속과 인터페이스: 공통점을 재사용하고 약속을 나누기</h2>
+<h3>상속은 공통 기능을 물려받아요</h3>
+<p><code>extends</code>
+로 부모 클래스의 공통 기능을 자식 클래스가 이어받을 수 있습니다. 예를 들어 모든 동물이 이름을 가진다는 공통점을 부모에 두고, 고양이와 강아지의 구체적인 행동을 자식에 둘 수 있어요.</p>
+<div class="inherit-tree"><div class="tree-parent">Animal · 공통 기능</div>
+<div class="tree-branches"><span>Cat · 야옹</span>
+<span>Dog · 멍멍</span>
+</div>
+<small>“고양이는 동물이다”처럼 정말로 ~이다 관계일 때 상속이 자연스러워요.</small>
+</div>
+<h3 id="java-interface">인터페이스는 할 수 있는 일의 약속이에요</h3>
+<p>인터페이스는 “이 기능을 제공하는 객체라면 이 메서드를 갖춰 주세요”라고 정하는 약속입니다. 여러 종류의 객체가 같은 역할을 서로 다른 방식으로 할 수 있어요.</p>
+<div class="java-code-card"><pre><code>interface Printable {
+    void print();
+}
+
+class Photo implements Printable {
+    public void print() {
+        System.out.println("사진 인쇄");
+    }
+}</code>
+</pre>
+</div>
+<p><strong>다형성</strong>
+은 같은 약속(인터페이스)을 바라보더라도 실제 객체에 따라 동작이 달라지는 성질이에요. 호출하는 쪽은 세부 구현을 몰라도 <code>print()</code>
+를 부탁할 수 있습니다.</p>
+<table class="study-table"><thead><tr><th>개념</th>
+<th>쉽게 설명하면</th>
+<th>기억할 점</th>
+</tr>
+</thead>
+<tbody><tr><td>상속</td>
+<td>공통된 기능을 물려받기</td>
+<td>자식이 부모의 한 종류인지 생각해요.</td>
+</tr>
+<tr><td>인터페이스</td>
+<td>기능을 제공하겠다는 약속</td>
+<td>구현 세부보다 할 수 있는 일을 표현해요.</td>
+</tr>
+<tr><td>다형성</td>
+<td>같은 요청, 객체마다 다른 동작</td>
+<td>호출하는 코드와 구체 구현을 느슨하게 연결해요.</td>
+</tr>
+</tbody>
+</table>
+<p class="plain-note"><b>초보 팁</b>
+ 상속을 많이 쓰는 것이 목표는 아니에요. 공통 역할은 인터페이스로 표현하고, 객체 간 조립(구성)을 사용하는 편이 더 단순한 경우도 많습니다.</p>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch07"><div class="section-number">07</div>
+<div><h2>예외와 패키지: 문제가 생겼을 때, 파일이 많아졌을 때</h2>
+<h3>예외는 실행 중 발견한 문제예요</h3>
+<p>없는 파일을 열거나 숫자를 0으로 나누는 등 실행 중 문제가 생기면 예외가 발생할 수 있어요. 프로그램이 갑자기 끝나지 않도록 <code>try</code>
+에서 시도하고 <code>catch</code>
+에서 대응할 수 있습니다.</p>
+<div class="java-code-card"><pre><code>try {
+    int number = Integer.parseInt("abc");
+    System.out.println(number);
+} catch (NumberFormatException e) {
+    System.out.println("숫자로 바꿀 수 없는 입력이에요");
+}</code>
+</pre>
+</div>
+<p><code>"abc"</code>
+는 숫자로 바꿀 수 없어서 예외가 생겨요. 예외를 무조건 잡아 숨기기보다, 복구할 수 있는 방법을 안내하거나 적절한 곳에서 처리해야 합니다.</p>
+<h3 id="java-package">패키지는 클래스의 주소이자 정리함이에요</h3>
+<p>클래스가 많아지면 비슷한 역할끼리 폴더처럼 묶어요. 패키지 이름은 클래스의 위치를 구분하고, <code>import</code>
+는 다른 패키지의 클래스를 코드에서 짧은 이름으로 사용하도록 도와줍니다.</p>
+<div class="java-code-card compact-code"><pre><code>package study.greeting;
+
+import java.util.Scanner;</code>
+</pre>
+</div>
+<table class="study-table"><thead><tr><th>문제 상황</th>
+<th>예시</th>
+<th>생각할 대응</th>
+</tr>
+</thead>
+<tbody><tr><td>입력 형식이 잘못됨</td>
+<td>문자를 정수로 변환</td>
+<td>사용자에게 올바른 입력을 안내</td>
+</tr>
+<tr><td>찾는 데이터가 없음</td>
+<td>파일·목록에서 항목 검색</td>
+<td>없을 때의 기본 동작을 정함</td>
+</tr>
+<tr><td>프로그램 내부 오류</td>
+<td>예상하지 못한 상태</td>
+<td>기록을 남기고 원인을 조사</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch08"><div class="section-number">08</div>
+<div><h2>컬렉션과 제네릭: 여러 데이터를 목적에 맞게 담기</h2>
+<p>배열은 크기를 처음 정하면 바꾸기 어렵습니다. 데이터가 늘거나 줄 수 있다면 컬렉션을 쓰면 편해요. 자바 컬렉션은 데이터를 담고 찾고 꺼내기 위한 자료구조 도구입니다.</p>
+<div class="collection-cards"><div><b>List</b>
+<strong>줄 세우기</strong>
+<p>순서가 있고 중복을 허용해요.<br>예: 대기 순서, 장바구니</p>
+</div>
+<div><b>Set</b>
+<strong>중복 없이 모으기</strong>
+<p>같은 값을 한 번만 보관해요.<br>예: 참석자 명단</p>
+</div>
+<div><b>Map</b>
+<strong>열쇠로 찾기</strong>
+<p>키와 값을 짝지어요.<br>예: 아이디 → 사용자</p>
+</div>
+</div>
+<div class="java-code-card"><div class="code-label">이름 목록에 추가하고 읽기</div>
+<pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add("민지");
+names.add("하늘");
+System.out.println(names.get(0)); // 민지</code>
+</pre>
+<p><code>List&lt;String&gt;</code>
+의 <code>&lt;String&gt;</code>
+은 이 목록에는 문자열을 담겠다는 표시예요.</p>
+</div>
+<h3 id="java-generic">제네릭은 담을 수 있는 종류를 미리 정해요</h3>
+<p>제네릭은 클래스나 메서드가 다룰 데이터 종류를 사용하는 곳에서 지정하게 해요. 잘못된 종류의 값이 섞이는 것을 컴파일 단계에서 발견할 수 있고, 꺼낸 값을 다시 변환하는 수고도 줄어요.</p>
+<table class="study-table"><thead><tr><th>컬렉션</th>
+<th>데이터 모양</th>
+<th>자주 쓰는 동작</th>
+</tr>
+</thead>
+<tbody><tr><td><code>List&lt;T&gt;</code>
+</td>
+<td>순서 있는 목록</td>
+<td><code>add</code>
+, <code>get</code>
+, <code>remove</code>
+</td>
+</tr>
+<tr><td><code>Set&lt;T&gt;</code>
+</td>
+<td>중복 없는 모음</td>
+<td><code>add</code>
+, <code>contains</code>
+</td>
+</tr>
+<tr><td><code>Map&lt;K,V&gt;</code>
+</td>
+<td>키와 값의 짝</td>
+<td><code>put</code>
+, <code>get</code>
+, <code>containsKey</code>
+</td>
+</tr>
+</tbody>
+</table>
+<p>여기서 <code>T</code>
+, <code>K</code>
+, <code>V</code>
+는 종류를 표시하는 자리표시자예요. 실제로는 <code>String</code>
+, <code>Integer</code>
+ 같은 타입을 넣습니다.</p>
+</div>
+</section>
+
+      <section class="lesson-section java-section" id="java-ch09"><div class="section-number">09</div>
+<div><h2>람다와 스트림: 목록을 간결하게 다루기</h2>
+<h3 id="java-stream">조금 뒤에 만나도 괜찮아요</h3>
+<p>기초 문법이 익숙해진 뒤에 읽어도 괜찮은 주제예요. 람다식은 짧은 작업을 간결하게 표현하는 문법이고, 스트림은 컬렉션의 데이터를 조건에 따라 고르고 변환해 결과로 모으는 흐름입니다.</p>
+<div class="java-code-card"><div class="code-label">점수에서 합격자만 골라 이름 목록 만들기</div>
+<pre><code>List&lt;String&gt; passed = students.stream()
+    .filter(student -&gt; student.getScore() &gt;= 60)
+    .map(student -&gt; student.getName())
+    .toList();</code>
+</pre>
+<p><code>filter</code>
+는 조건에 맞는 학생을 고르고, <code>map</code>
+은 학생을 이름으로 바꿔요. 화살표 <code>-&gt;</code>
+ 뒤에 실행할 동작을 적습니다.</p>
+</div>
+<div class="stream-map"><span>전체 학생</span>
+<b>→ filter</b>
+<span>60점 이상</span>
+<b>→ map</b>
+<span>이름만 모은 목록</span>
+</div>
+<p class="plain-note"><b>순서 권장</b>
+ 변수·조건·반복·메서드·클래스를 먼저 충분히 연습하세요. 람다와 스트림은 그 다음에 배우면 훨씬 쉽게 읽힙니다.</p>
+</div>
+</section>
+
+      <section class="quiz-section java-quiz"><p class="eyebrow">CHECK YOURSELF</p>
+<h2>마지막으로 직접 생각해 봐요</h2>
+<ol><li><code>=</code>
+와 <code>==</code>
+는 각각 어떤 뜻인가요?</li>
+<li>길이가 3인 배열의 마지막 칸 번호는 몇인가요?</li>
+<li>같은 문자열을 순서대로 여러 개 담고 싶다면 List와 Set 중 무엇이 어울릴까요?</li>
+</ol>
+<details><summary>정답과 이유 보기</summary>
+<ol><li><code>=</code>
+는 대입, <code>==</code>
+는 기본형 값의 비교예요. 문자열 내용 비교에는 보통 <code>equals</code>
+를 사용합니다.</li>
+<li>인덱스는 0부터 시작하므로 마지막 칸은 2입니다.</li>
+<li>순서와 중복이 필요하므로 List가 어울려요.</li>
+</ol>
+</details>
+</section>
+
+      <section class="visual-main course-visual java-visual" id="java-glance">
+        <div class="visual-kicker">JAVA FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+        <h1>코드가 자라는 길을<br><span>그림으로 다시 봐요</span>
+</h1>
+        <p class="visual-intro">앞에서 배운 문법을 개별 암기 항목이 아니라 하나의 프로그램을 만드는 흐름으로 연결해 봅니다. 그림은 개념의 관계를 잡기 위한 지도예요.</p>
+        <section class="visual-card java-visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>Java 코드는 이렇게 실행돼요</h2>
+<p>사람이 쓴 코드를 컴퓨터가 실행 가능한 형태로 바꿉니다.</p>
+</div>
+</div>
+<figure><svg viewBox="0 0 900 230" role="img" aria-label="Java 소스 코드가 컴파일되어 바이트코드가 되고 JVM에서 실행되는 과정" xmlns="http://www.w3.org/2000/svg"><defs><marker id="javaArrowA" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#5977c6"/></marker>
+</defs>
+<path d="M190 108H270M405 108H495M630 108H710" stroke="#5977c6" stroke-width="4" marker-end="url(#javaArrowA)"/><rect x="25" y="52" width="170" height="112" rx="20" fill="#eef2ff" stroke="#c8d4f3" stroke-width="2"/><text x="110" y="91" text-anchor="middle" font-size="20" font-weight="700" fill="#293b60">Hello.java</text>
+<text x="110" y="123" text-anchor="middle" font-size="15" fill="#65738b">사람이 작성</text>
+<rect x="280" y="52" width="130" height="112" rx="20" fill="#fff4e5" stroke="#efd5ad" stroke-width="2"/><text x="345" y="95" text-anchor="middle" font-size="19" font-weight="700" fill="#634b2c">javac</text>
+<text x="345" y="123" text-anchor="middle" font-size="14" fill="#806947">컴파일</text>
+<rect x="505" y="52" width="130" height="112" rx="20" fill="#eef7f3" stroke="#c9e3d7" stroke-width="2"/><text x="570" y="95" text-anchor="middle" font-size="19" font-weight="700" fill="#315d4d">Hello.class</text>
+<text x="570" y="123" text-anchor="middle" font-size="14" fill="#527c6c">바이트코드</text>
+<rect x="720" y="52" width="155" height="112" rx="20" fill="#f4effb" stroke="#ddd0ed" stroke-width="2"/><text x="797" y="95" text-anchor="middle" font-size="19" font-weight="700" fill="#54406d">JVM</text>
+<text x="797" y="123" text-anchor="middle" font-size="14" fill="#79658d">실행</text>
+<text x="450" y="204" text-anchor="middle" font-size="14" fill="#647087">운영체제마다 JVM이 달라도 같은 바이트코드를 실행할 수 있어요.</text>
+</svg>
+<figcaption>컴파일 과정에서 문법 오류를 발견하기도 해요. 실행 중 생기는 문제는 별도의 오류·예외로 만날 수 있습니다.</figcaption>
+</figure>
+</section>
+        <div class="visual-grid">
+          <section class="visual-card java-visual-card"><div class="visual-title"><span class="visual-index">02</span>
+<div><h2>변수는 이름이 붙은 상자예요</h2>
+<p>이름으로 값을 저장해 뒀다가 필요한 순간 꺼냅니다.</p>
+</div>
+</div>
+<figure><svg viewBox="0 0 560 230" role="img" aria-label="변수 score라는 상자에 정수 95를 저장하는 그림" xmlns="http://www.w3.org/2000/svg"><rect x="44" y="40" width="194" height="142" rx="18" fill="#eef2ff" stroke="#c8d4f3" stroke-width="3"/><text x="141" y="76" text-anchor="middle" font-size="15" fill="#65738b">자료형</text>
+<text x="141" y="111" text-anchor="middle" font-size="25" font-weight="700" fill="#344b7d">int</text>
+<text x="141" y="151" text-anchor="middle" font-size="17" fill="#52617c">이름: score</text>
+<path d="M255 112h61" stroke="#5977c6" stroke-width="4"/><path d="M306 101l14 11-14 11" fill="none" stroke="#5977c6" stroke-width="4"/><rect x="328" y="40" width="188" height="142" rx="18" fill="#fff4e5" stroke="#efd5ad" stroke-width="3"/><text x="422" y="76" text-anchor="middle" font-size="15" fill="#806947">저장된 값</text>
+<text x="422" y="132" text-anchor="middle" font-size="40" font-weight="700" fill="#76572e">95</text>
+</svg>
+</figure>
+<table class="visual-table"><thead><tr><th>코드</th>
+<th>상자에 담기는 것</th>
+</tr>
+</thead>
+<tbody><tr><td><code>int score = 95;</code>
+</td>
+<td>정수 95</td>
+</tr>
+<tr><td><code>String name = "민지";</code>
+</td>
+<td>문자열 민지</td>
+</tr>
+<tr><td><code>boolean ready = true;</code>
+</td>
+<td>참/거짓 중 참</td>
+</tr>
+</tbody>
+</table>
+</section>
+          <section class="visual-card java-visual-card"><div class="visual-title"><span class="visual-index">03</span>
+<div><h2>객체는 데이터와 행동을 함께 묶어요</h2>
+<p>클래스가 설계도라면 객체는 실제로 만들어진 인스턴스예요.</p>
+</div>
+</div>
+<div class="object-visual"><div class="object-visual-card"><small>클래스 · 설계도</small>
+<b>Pet</b>
+<span>이름</span>
+<span>먹기()</span>
+<span>놀기()</span>
+</div>
+<div class="object-visual-arrow">new →</div>
+<div class="object-visual-card instance"><small>객체 · 실제 인스턴스</small>
+<b>우리 집 고양이</b>
+<span>이름 = 나비</span>
+<span>먹기() 실행</span>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>클래스에 정의</th>
+<th>객체마다 가질 수 있음</th>
+</tr>
+</thead>
+<tbody><tr><td>필드와 메서드 모양</td>
+<td>각 객체의 실제 필드 값과 상태</td>
+</tr>
+<tr><td>어떤 동작이 가능한지</td>
+<td>해당 객체에서 동작을 실행한 결과</td>
+</tr>
+</tbody>
+</table>
+</section>
+          <section class="visual-card java-visual-card"><div class="visual-title"><span class="visual-index">04</span>
+<div><h2>데이터 담는 그릇, 이렇게 골라요</h2>
+<p>데이터를 어떻게 찾고 싶은지에 따라 자료구조가 달라져요.</p>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>도구</th>
+<th>비유</th>
+<th>순서</th>
+<th>중복</th>
+<th>잘 맞는 예</th>
+</tr>
+</thead>
+<tbody><tr><td>배열</td>
+<td>칸 수가 정해진 사물함</td>
+<td>있음</td>
+<td>허용</td>
+<td>크기가 고정된 데이터</td>
+</tr>
+<tr><td>List</td>
+<td>번호표 붙은 줄</td>
+<td>있음</td>
+<td>허용</td>
+<td>순서 있는 목록</td>
+</tr>
+<tr><td>Set</td>
+<td>중복 이름표 없는 모음</td>
+<td>주 목적 아님</td>
+<td>불가</td>
+<td>유일한 태그·아이디</td>
+</tr>
+<tr><td>Map</td>
+<td>이름표로 찾는 사전</td>
+<td>키로 검색</td>
+<td>키는 유일</td>
+<td>아이디로 회원 찾기</td>
+</tr>
+</tbody>
+</table>
+<p class="table-footnote">Map은 키(key)와 값(value)을 한 쌍으로 저장합니다. 저장 순서가 필요한지는 사용하는 Map 구현 종류를 함께 확인해야 해요.</p>
+</section>
+          <section class="visual-card java-visual-card"><div class="visual-title"><span class="visual-index">05</span>
+<div><h2>배운 내용은 이렇게 연결돼요</h2>
+<p>한 가지 기능을 만들 때 기초 개념 여러 개를 함께 사용합니다.</p>
+</div>
+</div>
+<div class="java-build-path"><div><b>값 보관</b>
+<span>변수·자료형</span>
+</div>
+<i>→</i>
+<div><b>상황 선택</b>
+<span>조건문</span>
+</div>
+<i>→</i>
+<div><b>여러 번 처리</b>
+<span>반복문·컬렉션</span>
+</div>
+<i>→</i>
+<div><b>역할 나누기</b>
+<span>메서드·객체</span>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>예: 점수 목록에서 평균 계산</th>
+<th>사용되는 개념</th>
+</tr>
+</thead>
+<tbody><tr><td>점수를 여러 개 저장</td>
+<td>배열 또는 List</td>
+</tr>
+<tr><td>각 점수를 차례로 더함</td>
+<td>반복문</td>
+</tr>
+<tr><td>총점을 점수 개수로 나눔</td>
+<td>연산자·변수</td>
+</tr>
+<tr><td>계산 과정을 다시 쓸 수 있게 묶음</td>
+<td>메서드</td>
+</tr>
+</tbody>
+</table>
+</section>
+        </div>
+        <section class="visual-card java-debug-card"><div class="visual-title"><span class="visual-index">06</span>
+<div><h2>코드가 안 될 때, 탐정처럼 확인하기</h2>
+<p>문제 메시지를 보고 범위를 좁히면 막막함이 줄어들어요.</p>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>증상</th>
+<th>먼저 볼 곳</th>
+<th>확인 질문</th>
+</tr>
+</thead>
+<tbody><tr><td>빨간 줄, 컴파일 실패</td>
+<td>문법·괄호·세미콜론</td>
+<td>괄호 짝과 문장 끝 표시가 맞나?</td>
+</tr>
+<tr><td>실행 중 갑자기 멈춤</td>
+<td>예외 메시지·줄 번호</td>
+<td>어떤 값이 없거나 예상과 다르지?</td>
+</tr>
+<tr><td>실행되지만 답이 이상함</td>
+<td>조건·반복 횟수·자료형</td>
+<td>계산을 종이에 한 번 따라가면 같은 값이 나오나?</td>
+</tr>
+<tr><td>값이 엉뚱한 곳에서 바뀜</td>
+<td>객체 공유·변수 변경</td>
+<td>누가 이 값을 수정할 수 있지?</td>
+</tr>
+</tbody>
+</table>
+</section>
+        <section class="visual-card java-compare-card"><div class="visual-title"><span class="visual-index">07</span>
+<div><h2>다음 공부로 이어지는 길</h2>
+<p>기초를 먼저 단단히 하면 이후 주제가 덜 낯설어요.</p>
+</div>
+</div>
+<div class="java-road"><span>Java 문법</span>
+<b>→</b>
+<span>객체지향</span>
+<b>→</b>
+<span>컬렉션·예외</span>
+<b>→</b>
+<span>테스트·빌드 도구</span>
+<b>→</b>
+<span>Spring 서버</span>
+</div>
+<p>Spring은 Java로 웹 서버를 만들 때 자주 쓰는 도구 모음이에요. 그래서 변수와 메서드, 클래스, 인터페이스, 예외를 Java 기초에서 먼저 만나 두면 이후 코드가 훨씬 읽기 쉬워집니다.</p>
+</section>
+      </section>
+
+      <section class="lesson-section" id="java-extra"><div class="section-number">더 알아보기</div><div><h2>equals와 hashCode는 함께 맞춰야 해요</h2><p>참조형에서 <code>==</code>는 같은 객체인지 비교하고, <code>equals()</code>는 정한 값 비교 규칙을 사용합니다.</p><div class="field-code"><div class="field-code-label">문자열 비교</div><pre><code>String first = new String("java");
+String second = new String("java");
+System.out.println(first == second);      // false
+System.out.println(first.equals(second)); // true</code></pre></div><p>HashMap과 HashSet은 hashCode로 후보 위치를 찾고 equals로 같은 키인지 판별합니다. equals가 같다고 보는 객체는 같은 hashCode를 반환해야 해요. 저장된 키 객체가 바뀌면 조회에 실패할 수 있으므로 값 객체는 불변으로 두는 편이 안전합니다.</p><p class="field-note"><b>컬렉션 선택</b> 순서가 필요하면 List, 중복을 막으면 Set, 키로 찾으면 Map을 검토하세요.</p></div></section>
+<section class="lesson-section java-section" id="java-deeper"><div class="section-number">심화</div><div><h2>객체의 수명과 값 비교 규칙</h2><h3>도달할 수 없는 객체는 회수 대상이에요</h3><p>객체는 보통 힙에 생성되고 변수에는 객체를 가리키는 참조가 들어갑니다. 더 이상 도달할 수 없는 객체는 가비지 컬렉터가 회수할 수 있지만 파일·소켓 같은 외부 자원은 자동 메모리 회수에만 맡기지 마세요. try-with-resources로 사용 후 닫고, 캐시와 컬렉션이 객체를 불필요하게 오래 잡아 두는지도 살핍니다.</p><h3>equals와 hashCode 계약을 함께 맞춰요</h3><p>값 기준으로 equals를 재정의했다면 같은 값의 객체가 같은 hashCode를 반환해야 HashMap과 HashSet에서 올바르게 찾을 수 있습니다. 생성 뒤 상태가 바뀌지 않는 불변 객체는 여러 코드에서 공유하기 쉽고 동시성 문제도 줄여 줍니다.</p><ul class="field-list"><li>null 가능성을 분명히 하고 필요한 경우 명시적으로 검사합니다.</li><li>컬렉션은 순서, 중복 허용, 키 조회 요구에 맞춰 고릅니다.</li><li>예외를 처리했다면 복구하거나 원인을 보존해 전달합니다.</li></ul></div></section>
+<section class="course-terms java-terms" id="java-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>초보 Java 용어사전</h2>
+<p>처음 보는 말을 쉬운 문장으로 다시 적어 뒀어요.</p>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>한 줄 뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>소스 코드</td>
+<td>사람이 프로그래밍 언어로 작성한 명령.</td>
+</tr>
+<tr><td>컴파일</td>
+<td>소스 코드를 실행 가능한 중간 형태로 변환하며 검사하는 과정.</td>
+</tr>
+<tr><td>변수</td>
+<td>값을 저장해 두고 이름으로 다시 찾는 공간.</td>
+</tr>
+<tr><td>자료형</td>
+<td>값의 종류와 사용할 수 있는 연산을 나타내는 정보.</td>
+</tr>
+<tr><td>메서드</td>
+<td>특정 작업을 수행하도록 이름 붙여 묶어 둔 코드.</td>
+</tr>
+<tr><td>배열</td>
+<td>같은 자료형의 여러 값을 순서대로 담는 고정된 칸.</td>
+</tr>
+<tr><td>클래스</td>
+<td>객체의 필드와 메서드를 정의한 설계도.</td>
+</tr>
+<tr><td>객체</td>
+<td>클래스라는 설계도에 따라 만들어진 실제 대상.</td>
+</tr>
+<tr><td>인스턴스</td>
+<td>클래스로부터 만들어진 객체를 강조해 부르는 말.</td>
+</tr>
+<tr><td>캡슐화</td>
+<td>객체의 내부 상태를 보호하고 필요한 동작으로 접근하게 하는 원칙.</td>
+</tr>
+<tr><td>인터페이스</td>
+<td>구현할 기능의 이름과 형태를 정하는 약속.</td>
+</tr>
+<tr><td>예외</td>
+<td>프로그램 실행 중 정상 흐름을 방해하는 문제 상황.</td>
+</tr>
+<tr><td>컬렉션</td>
+<td>여러 데이터를 저장하고 다루는 Java 도구.</td>
+</tr>
+<tr><td>제네릭</td>
+<td>클래스나 메서드가 다룰 데이터 종류를 사용할 때 지정하는 기능.</td>
+</tr>
+<tr><td>람다식</td>
+<td>짧은 동작을 간결하게 표현하는 문법.</td>
+</tr>
+<tr><td>스트림</td>
+<td>데이터 모음을 걸러 내고 변환해 결과를 만드는 처리 방식.</td>
+</tr>
+</tbody>
+</table>
+</section>
+      
+<div class="course-end"><a href="index.html">전체 과목으로 돌아가기</a>
+</div>
+    
+</main>
+  </div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

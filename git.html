@@ -1,0 +1,340 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Git 협업 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">GIT · CONTENTS</p>
+<h2>Git 협업</h2>
+<nav aria-label="Git 전체 목차"><a class="field-start-link" href="#git-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 버전 관리</summary>
+<div class="toc-links"><a href="#git-ch01">변경 이력 남기기</a>
+<a href="#git-commit">커밋</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · 브랜치</summary>
+<div class="toc-links"><a href="#git-ch02">작업 줄기 나누기</a>
+<a href="#git-merge">병합과 충돌</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 원격 저장소</summary>
+<div class="toc-links"><a href="#git-ch03">push·pull</a>
+<a href="#git-remote">협업 흐름</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 안전한 작업</summary>
+<div class="toc-links"><a href="#git-ch04">되돌리기와 복구</a>
+<a href="#git-recovery">명령 선택</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 리뷰</summary>
+<div class="toc-links"><a href="#git-ch05">Pull Request</a>
+<a href="#git-review">좋은 커밋</a>
+</div>
+</details>
+<a href="#git-glance">그림과 표로 한눈에</a>
+<a href="#git-extra">변경 되돌리기</a>
+<a href="#git-deeper">협업 심화</a>
+<a href="#git-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="git-start">
+<h1>Git 협업</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">🕰️</span>
+<p><strong>Git은 “저장” 버튼보다 자세한 시간 여행 기록에 가까워요.</strong>
+<br>작업한 내용을 의미 있는 단위로 기록하고, 기록 사이의 차이를 확인하고, 팀원의 작업을 안전하게 합치는 도구입니다.</p>
+</section>
+<section class="lesson-section field-section" id="git-ch01"><div class="section-number">01</div>
+<div><h2>버전 관리: 변경 이유와 결과를 기록하기</h2>
+<p>프로젝트 폴더를 통째로 복사해 <code>final_final2_reallyfinal</code>
+ 같은 폴더를 만드는 대신, Git은 파일의 변경 사항을 버전으로 저장합니다. 저장소(repository)는 프로젝트와 그 변경 기록이 들어 있는 공간이에요.</p>
+<h3 id="git-commit">작은 기록 단위, 커밋</h3>
+<p>커밋(commit)은 특정 시점의 변경을 설명과 함께 기록한 묶음이에요. Git은 모든 순간의 파일 전체를 복사하는 것처럼 보이지만, 내부적으로 효율적인 방식으로 내용을 저장하고 이전 상태와 비교할 수 있게 합니다.</p>
+<div class="field-code"><div class="field-code-label">가장 자주 쓰는 기본 흐름</div>
+<pre><code>git status                 # 현재 변경 확인
+git add src/Main.java      # 기록에 넣을 변경 선택
+git diff --staged          # 기록될 차이 다시 확인
+git commit -m "회원 조회 추가" # 이력에 저장</code>
+</pre>
+</div>
+<p>작업 디렉터리에서 파일을 고친 뒤, <code>add</code>
+로 이번 커밋에 담을 내용을 스테이징하고, <code>commit</code>
+으로 기록합니다. add 후에도 파일을 다시 확인하면 기록에 실수로 비밀 값이 들어가는 일을 줄일 수 있어요.</p>
+<table class="study-table"><thead><tr><th>영역</th>
+<th>뜻</th>
+<th>확인 방법</th>
+</tr>
+</thead>
+<tbody><tr><td>작업 디렉터리</td>
+<td>지금 수정하고 있는 파일</td>
+<td><code>git status</code>
+</td>
+</tr>
+<tr><td>스테이징 영역</td>
+<td>다음 커밋에 포함하겠다고 고른 변경</td>
+<td><code>git diff --staged</code>
+</td>
+</tr>
+<tr><td>저장소 이력</td>
+<td>이미 만든 커밋들의 기록</td>
+<td><code>git log --oneline</code>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="git-ch02"><div class="section-number">02</div>
+<div><h2>브랜치: 평행한 작업 줄기를 만들기</h2>
+<p>브랜치는 커밋을 가리키는 가벼운 이름표예요. 새 기능을 만들 때 브랜치를 나누면 기존 안정 버전에 영향을 덜 주면서 작업할 수 있습니다.</p>
+<div class="field-pipeline"><div><b>main</b>
+<small>기준 버전</small>
+</div>
+<i>↘</i>
+<div><b>feature</b>
+<small>새 기능 작업</small>
+</div>
+<i>→</i>
+<div><b>검토</b>
+<small>변경 비교</small>
+</div>
+<i>→</i>
+<div><b>병합</b>
+<small>기준에 통합</small>
+</div>
+</div>
+<div class="field-code"><div class="field-code-label">브랜치 만들고 이동하기</div>
+<pre><code>git switch -c feature/member-search
+git status
+# 작업하고 커밋한 뒤
+ git switch main
+git merge feature/member-search</code>
+</pre>
+</div>
+<h3 id="git-merge">병합과 충돌</h3>
+<p>병합(merge)은 다른 브랜치의 변경을 현재 브랜치에 합칩니다. 같은 파일의 같은 부분을 서로 다르게 바꾸면 Git이 자동으로 결정하지 못하고 충돌(conflict)을 표시해요. 사람이 의도한 최종 내용을 정하고, 관련 테스트를 한 뒤 해결된 파일을 다시 커밋해야 합니다.</p>
+<table class="study-table"><thead><tr><th>상황</th>
+<th>Git의 반응</th>
+<th>내가 할 일</th>
+</tr>
+</thead>
+<tbody><tr><td>서로 다른 파일 수정</td>
+<td>대개 자동 병합</td>
+<td>변경이 함께 잘 동작하는지 확인</td>
+</tr>
+<tr><td>같은 부분을 다르게 수정</td>
+<td>충돌 표시</td>
+<td>두 의도를 읽고 최종 코드 작성</td>
+</tr>
+<tr><td>병합 뒤 기능 깨짐</td>
+<td>텍스트 충돌은 없을 수도 있음</td>
+<td>테스트와 실행 결과 확인</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="git-ch03"><div class="section-number">03</div>
+<div><h2>원격 저장소: 내 컴퓨터와 팀의 저장소 연결하기</h2>
+<p>로컬 저장소는 내 컴퓨터에 있고, 원격(remote) 저장소는 GitHub 같은 서버에 있어요. <code>push</code>
+는 내 커밋을 원격으로 보내고, <code>fetch</code>
+는 원격 이력을 확인하며, <code>pull</code>
+은 원격 변경을 가져와 현재 작업과 통합하는 명령입니다.</p>
+<div class="field-flow"><span>내 브랜치<small>커밋</small>
+</span>
+<b>push →</b>
+<strong>원격 저장소<small>팀과 공유</small>
+</strong>
+<b>← pull</b>
+<span>팀 브랜치<small>변경 가져오기</small>
+</span>
+</div>
+<h3 id="git-remote">팀 작업의 기본 흐름</h3>
+<ol class="field-list"><li>최신 기준 브랜치에서 새 작업 브랜치를 만듭니다.</li>
+<li>작은 단위로 수정하고, 의도가 드러나는 커밋을 만듭니다.</li>
+<li>원격 브랜치에 push한 뒤 Pull Request(PR)를 엽니다.</li>
+<li>동료 피드백과 자동 검사를 확인하고 수정합니다.</li>
+<li>검토가 끝난 변경을 기준 브랜치에 병합합니다.</li>
+</ol>
+<p>여러 사람이 같은 줄기를 동시에 고치므로, push 전 원격의 최신 변경을 확인하고 필요하면 통합합니다. 정확한 팀 규칙은 프로젝트에 따라 달라요.</p>
+<table class="study-table"><thead><tr><th>명령</th>
+<th>하는 일</th>
+<th>주의</th>
+</tr>
+</thead>
+<tbody><tr><td><code>fetch</code>
+</td>
+<td>원격 변경을 가져와 비교 가능하게 함</td>
+<td>현재 작업 내용을 자동으로 합치지 않음</td>
+</tr>
+<tr><td><code>pull</code>
+</td>
+<td>원격 변경을 가져와 통합</td>
+<td>충돌이 생길 수 있음</td>
+</tr>
+<tr><td><code>push</code>
+</td>
+<td>내 커밋을 원격에 올림</td>
+<td>팀 이력을 덮는 강제 push 주의</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="git-ch04"><div class="section-number">04</div>
+<div><h2>되돌리기: 명령 전에 상태와 공유 여부 확인하기</h2>
+<p>Git에서 되돌리는 방법은 작업이 커밋됐는지, 이미 다른 사람과 공유했는지에 따라 달라져요. 특히 공유한 이력을 강제로 바꾸면 팀원의 작업과 충돌할 수 있습니다.</p>
+<h3 id="git-recovery">상황에 따라 고르는 복구 명령</h3>
+<table class="study-table"><thead><tr><th>상태</th>
+<th>목표</th>
+<th>일반적인 도구</th>
+</tr>
+</thead>
+<tbody><tr><td>아직 스테이징 전</td>
+<td>작업 내용 비교</td>
+<td><code>git diff</code>
+</td>
+</tr>
+<tr><td>스테이징했지만 커밋 전</td>
+<td>선택에서 제외</td>
+<td><code>git restore --staged</code>
+</td>
+</tr>
+<tr><td>로컬 커밋을 되돌림</td>
+<td>변경을 보존하며 수정</td>
+<td><code>git revert</code>
+ 또는 신중한 reset</td>
+</tr>
+<tr><td>이미 공유한 커밋</td>
+<td>취소 이력을 새로 남김</td>
+<td><code>git revert</code>
+가 보통 안전</td>
+</tr>
+</tbody>
+</table>
+<p>명령을 실행하기 전 <code>git status</code>
+와 <code>git log</code>
+로 상황을 확인하고, 중요한 변경은 별도로 복사하거나 백업하세요. 강제 옵션은 의미를 모르면 사용하지 않습니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="git-ch05"><div class="section-number">05</div>
+<div><h2>코드 리뷰: 변경을 이해하고 함께 품질 높이기</h2>
+<p>Pull Request는 변경을 팀원에게 보여 주고, 토론·검사·승인을 거쳐 통합하는 협업 절차예요. 특정 서비스의 버튼 이름이 아니라, 변경 검토를 위한 작업 단위라고 이해하면 됩니다.</p>
+<h3 id="git-review">읽기 좋은 변경 기록</h3>
+<table class="study-table"><thead><tr><th>좋은 습관</th>
+<th>왜 도움이 되나?</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody><tr><td>작은 커밋</td>
+<td>변경 의도를 빠르게 파악</td>
+<td>“회원 검색 조건 추가”</td>
+</tr>
+<tr><td>설명 있는 PR</td>
+<td>배경과 확인 방법 공유</td>
+<td>무엇을 왜 바꿨는지 작성</td>
+</tr>
+<tr><td>비밀 값 검사</td>
+<td>토큰·비밀번호 노출 예방</td>
+<td>커밋 전 diff 확인</td>
+</tr>
+<tr><td>검사 결과 확인</td>
+<td>통합 전 실수 발견</td>
+<td>테스트·빌드 통과 확인</td>
+</tr>
+</tbody>
+</table>
+<p>리뷰는 사람에 대한 평가가 아니라 변경 사항과 위험을 살펴보는 과정이에요. 질문과 제안은 구체적으로 쓰고, 작성자는 맥락과 의도를 설명합니다.</p>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="git-glance"><div class="visual-kicker">GIT FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>작업을 기록하고<br><span>팀과 합치는 흐름</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>작업 브랜치에서 기준으로</h2>
+<p>기록하고 공유한 다음 검토를 거쳐 통합합니다.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>수정</b>
+<small>working tree</small>
+</div>
+<i>→</i>
+<div><b>선택</b>
+<small>staging</small>
+</div>
+<i>→</i>
+<div><b>기록</b>
+<small>commit</small>
+</div>
+<i>→</i>
+<div><b>공유</b>
+<small>push</small>
+</div>
+<i>→</i>
+<div><b>검토·병합</b>
+<small>PR</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>작업 전 질문</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr><td>어떤 브랜치에 있지?</td>
+<td>잘못된 기준 브랜치 수정 방지</td>
+</tr>
+<tr><td>이번 커밋에 무엇이 들어가지?</td>
+<td>비밀 값·무관한 파일 포함 방지</td>
+</tr>
+<tr><td>공유된 이력을 바꾸는가?</td>
+<td>팀원의 커밋 손실 방지</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="lesson-section" id="git-extra"><div class="section-number">더 알아보기</div><div><h2>변경을 되돌릴 때 공유 여부부터 확인해요</h2><p>작업 파일 수정, 스테이징, 커밋은 서로 다른 상태입니다. 먼저 <code>git status</code>, <code>git diff</code>, <code>git diff --staged</code>로 무엇이 바뀌는지 확인하세요.</p><table class="study-table"><thead><tr><th>상황</th><th>방향</th></tr></thead><tbody><tr><td>스테이징 해제</td><td><code>git restore --staged 파일</code></td></tr><tr><td>공유 전 커밋 수정</td><td>상태를 확인한 뒤 reset 검토</td></tr><tr><td>공유된 커밋 취소</td><td><code>git revert 해시</code>로 새 취소 커밋 기록</td></tr></tbody></table><p>reset은 브랜치 위치를 옮기고 옵션에 따라 스테이징과 파일에도 영향을 줍니다. 공유된 이력을 강제로 다시 쓰면 동료 작업과 충돌할 수 있어요.</p><p class="field-note"><b>안전한 습관</b> 되돌리기 전에 영향을 받는 파일과 커밋을 확인하고 필요한 변경은 따로 저장하세요.</p></div></section>
+<section class="lesson-section field-section" id="git-deeper"><div class="section-number">심화</div><div><h2>협업에서 이력을 안전하게 합치기</h2><h3>merge와 rebase는 이력을 다르게 남겨요</h3><p>merge는 두 이력을 합친 시점을 기록하고, rebase는 현재 브랜치의 커밋을 새 기준 위에 다시 적용해 선형 이력을 만듭니다. rebase는 커밋 기록을 바꾸므로 이미 다른 사람이 가져간 공유 커밋에는 사용하지 않는 편이 안전합니다.</p><h3>충돌은 양쪽 변경의 의도를 읽고 풀어요</h3><p>충돌 표시는 같은 부분이 다르게 바뀌어 Git이 선택하지 못했다는 뜻입니다. 한쪽을 무조건 고르지 말고 두 변경의 목적을 확인해 합친 뒤 diff와 관련 동작을 살펴보세요. 진행 중 취소 명령을 알아 두면 잘못된 통합에서 되돌아오기 쉽습니다.</p><ul class="field-list"><li>작업 상태를 확인하고 작은 단위로 커밋합니다.</li><li>메시지에는 변경 이유와 맥락을 남깁니다.</li><li>비밀 값이 올라가면 커밋 삭제뿐 아니라 해당 자격 증명도 폐기합니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="git-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>Git 초보 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>한 줄 뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>저장소</td>
+<td>프로젝트 파일과 변경 이력을 관리하는 공간.</td>
+</tr>
+<tr><td>커밋</td>
+<td>변경 내용을 설명과 함께 남긴 이력 단위.</td>
+</tr>
+<tr><td>브랜치</td>
+<td>독립된 작업 줄기를 가리키는 이름표.</td>
+</tr>
+<tr><td>스테이징</td>
+<td>다음 커밋에 포함할 변경을 고르는 단계.</td>
+</tr>
+<tr><td>원격</td>
+<td>네트워크 너머 팀과 공유하는 저장소.</td>
+</tr>
+<tr><td>병합</td>
+<td>다른 작업 줄기의 변경을 현재 줄기에 통합.</td>
+</tr>
+<tr><td>충돌</td>
+<td>Git이 자동으로 결정하지 못해 사람이 해결해야 할 변경 겹침.</td>
+</tr>
+<tr><td>Pull Request</td>
+<td>변경을 검토하고 병합해 달라고 제안하는 협업 절차.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

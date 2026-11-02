@@ -1,0 +1,321 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>클라우드 기초 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">CLOUD · CONTENTS</p>
+<h2>클라우드 기초</h2>
+<nav aria-label="클라우드 기초 목차"><a class="field-start-link" href="#cloud-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 클라우드 서비스</summary>
+<div class="toc-links"><a href="#cloud-ch01">컴퓨트·저장소·DB</a>
+<a href="#cloud-model">서비스 모델</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · 네트워크</summary>
+<div class="toc-links"><a href="#cloud-ch02">VPC·서브넷</a>
+<a href="#cloud-network">공개·비공개 경계</a>
+<a href="#cloud-servers">서버·인프라 역할</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 신원과 권한</summary>
+<div class="toc-links"><a href="#cloud-ch03">IAM·최소 권한</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 가용성과 확장</summary>
+<div class="toc-links"><a href="#cloud-ch04">로드 밸런싱</a>
+<a href="#cloud-resilience">장애 복구</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 관찰과 비용</summary>
+<div class="toc-links"><a href="#cloud-ch05">로그·메트릭</a>
+<a href="#cloud-cost">비용 관리</a>
+</div>
+</details>
+<details class="toc-group"><summary>06 · 배포 구조</summary>
+<div class="toc-links"><a href="#cloud-ch06">환경 구성</a>
+</div>
+</details>
+<a href="#cloud-glance">그림과 표로 한눈에</a>
+<a href="#cloud-extra">클라우드 책임</a>
+<a href="#cloud-deeper">장애 복구 심화</a>
+<a href="#cloud-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="cloud-start">
+<h1>클라우드 기초</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">☁️</span>
+<p><strong>클라우드는 “다른 사람 컴퓨터”라는 설명만으로는 부족해요.</strong>
+<br>네트워크, 사용자 권한, 배포, 데이터 보관과 비용까지 설정해야 안전한 서비스가 됩니다. 공급자가 관리하는 부분과 우리가 관리할 부분을 구분하세요.</p>
+</section>
+<section class="lesson-section field-section" id="cloud-ch01"><div class="section-number">01</div>
+<div><h2>클라우드 서비스: 컴퓨터와 관리 책임 빌리기</h2>
+<p>클라우드 서비스는 서버와 데이터센터 자원을 네트워크로 제공해요. 가상 머신, 컨테이너 실행 환경, 객체 저장소, 관리형 데이터베이스 같은 서비스를 조합할 수 있습니다.</p>
+<h3 id="cloud-model">IaaS·PaaS·SaaS의 차이</h3>
+<table class="study-table"><thead><tr><th>모델</th>
+<th>공급자가 더 많이 관리</th>
+<th>사용자가 주로 관리</th>
+<th>예를 들면</th>
+</tr>
+</thead>
+<tbody><tr><td>IaaS</td>
+<td>물리 장비·가상화</td>
+<td>OS·런타임·앱·데이터</td>
+<td>가상 서버</td>
+</tr>
+<tr><td>PaaS</td>
+<td>OS·런타임 일부까지</td>
+<td>애플리케이션·데이터</td>
+<td>관리형 앱 실행 환경</td>
+</tr>
+<tr><td>SaaS</td>
+<td>애플리케이션 운영 대부분</td>
+<td>사용자·데이터 설정</td>
+<td>웹 기반 협업 도구</td>
+</tr>
+</tbody>
+</table>
+<p>이 구분은 이해를 돕는 모델이며 각 공급자 서비스의 실제 책임 범위는 계약과 기능에 따라 확인해야 해요.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cloud-ch02"><div class="section-number">02</div>
+<div><h2>클라우드 네트워크: 서비스에 닿는 길 설계</h2>
+<p>가상 네트워크 안에 서브넷을 나누고 라우팅과 방화벽 규칙을 설정합니다. 공개로 접근할 웹 입구와 내부에서만 접근할 앱·데이터베이스를 분리해 공격 표면을 줄여요.</p>
+<h3 id="cloud-network">인터넷에 모두 공개할 필요는 없어요</h3>
+<div class="field-flow"><span>인터넷<small>사용자</small>
+</span>
+<b>→</b>
+<strong>공개 진입점<small>LB·Proxy</small>
+</strong>
+<b>→</b>
+<strong>앱 서브넷<small>앱 서버</small>
+</strong>
+<b>→</b>
+<span>DB 서브넷<small>내부 접근</small>
+</span>
+</div>
+<table class="study-table"><thead><tr><th>대상</th>
+<th>필요한 접근 예</th>
+<th>기본 원칙</th>
+</tr>
+</thead>
+<tbody><tr><td>웹 진입점</td>
+<td>인터넷에서 HTTPS</td>
+<td>공개 포트 최소화</td>
+</tr>
+<tr><td>애플리케이션</td>
+<td>진입점에서 앱 포트</td>
+<td>직접 인터넷 공개 제한</td>
+</tr>
+<tr><td>데이터베이스</td>
+<td>필요한 앱 서버에서 DB 포트</td>
+<td>공개 IP 없이 내부 접근</td>
+</tr>
+<tr><td>관리 접속</td>
+<td>승인된 관리자 경로</td>
+<td>강한 인증과 접속 기록</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cloud-servers">이름이 낯선 서버들: 어떤 일을 하고 언제 쓸까요?</h3>
+<p>아래 이름은 꼭 별도 가상 머신 한 대를 뜻하지 않아요. 직접 서버로 운영할 수도 있고, 클라우드의 관리형 서비스로 같은 역할을 맡길 수도 있습니다. 서버를 둘 때는 필요한 통신 경로만 열고, 가능하면 인터넷에 직접 노출하지 않습니다.</p>
+<table class="study-table"><thead><tr><th>이름</th><th>하는 일</th><th>언제 쓰나</th><th>흔한 배치·접근</th></tr></thead>
+<tbody>
+<tr><td>Bastion host<br>(점프 서버)</td><td>관리자가 내부 서버에 접속할 때 거치는 통제 지점</td><td>사설 서브넷의 VM을 SSH/RDP로 관리해야 할 때</td><td>관리자 인증을 제한하고 기록을 남김. 내부 서버는 bastion에서 오는 관리 포트만 허용. 가능하면 세션 관리형 접속을 사용</td></tr>
+<tr><td>NFS 서버</td><td>여러 Linux 서버가 함께 쓰는 네트워크 파일 시스템 제공</td><td>여러 앱 인스턴스가 같은 업로드 파일이나 공유 디렉터리를 읽고 써야 할 때</td><td>사설 네트워크에 배치하고 앱 서버에서만 NFS 포트를 허용. 단일 서버는 장애 지점이 될 수 있어 관리형 파일 스토리지나 이중화를 검토</td></tr>
+<tr><td>Load Balancer (LB)</td><td>들어온 요청을 여러 서버로 분배하고 상태가 나쁜 서버를 제외</td><td>앱 서버를 여러 대 운영하거나 배포·장애 시 트래픽을 나눠야 할 때</td><td>인터넷용은 공개 구간, 내부 서비스용은 사설 구간에 배치 가능</td></tr>
+<tr><td>Reverse Proxy</td><td>앱 앞에서 요청을 전달하고 TLS 종료, 경로 기반 분기 등을 처리</td><td>여러 앱을 도메인·경로로 나누거나 앱 서버를 외부에 직접 공개하지 않을 때</td><td>공개 진입점 또는 LB 뒤에 배치. LB와 기능이 겹칠 수 있어 역할을 구분</td></tr>
+<tr><td>NAT Gateway</td><td>사설 서버가 외부로 나가는 연결을 중계</td><td>사설 앱 서버가 패키지 업데이트나 외부 API 호출은 해야 하지만 외부에서 먼저 접속하게 하고 싶지 않을 때</td><td>공개 서브넷의 NAT 장치로 아웃바운드 경로를 설정. 인바운드 접속 통로는 아님</td></tr>
+<tr><td>DNS 서버</td><td>도메인 이름을 IP 주소로 찾고 내부 이름을 관리</td><td>서비스 주소를 이름으로 연결하거나 내부 도메인을 운영할 때</td><td>대개 클라우드 관리형 DNS를 사용. 내부·외부 조회 범위를 구분</td></tr>
+<tr><td>캐시 서버 (Redis 등)</td><td>자주 쓰는 데이터를 메모리에 보관해 빠르게 제공</td><td>세션, 짧은 수명의 조회 결과, 작업 상태를 여러 앱 인스턴스가 공유할 때</td><td>사설 네트워크에 두고 앱에서만 접근. 캐시는 원본 데이터베이스의 백업을 대신하지 않음</td></tr>
+<tr><td>메시지 브로커 / 큐</td><td>서비스 사이에 작업을 전달하고 소비자가 나중에 처리하도록 대기</td><td>메일 발송·이미지 처리처럼 오래 걸리는 작업을 웹 요청과 분리하거나 일시적 부하를 흡수할 때</td><td>관리형 큐 또는 브로커를 쓰고 생산자·소비자 권한과 재시도·중복 처리를 설계</td></tr>
+<tr><td>모니터링·로그 수집기</td><td>서버 상태, 메트릭, 로그를 모아 검색·경보에 사용</td><td>장애 원인을 찾고 용량·오류·보안 이벤트를 확인할 때</td><td>중앙 관리형 관찰 서비스로 전송하는 구성이 흔함. 민감정보와 보관 기간을 관리</td></tr>
+</tbody></table>
+<p><strong>예시 경로:</strong> 인터넷 → 공개 LB → 사설 앱 서버 → 내부 DB. 관리자는 별도의 승인된 경로로 bastion 또는 세션 관리 기능을 거쳐 접속하고, 앱 서버는 사설 NFS·캐시·큐에 필요한 포트로만 연결합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cloud-ch03"><div class="section-number">03</div>
+<div><h2>IAM: 누가 무엇을 할 수 있는지 관리하기</h2>
+<p>IAM은 사용자·서비스 계정·역할에 어떤 리소스 작업을 허용할지 관리하는 체계예요. 앱이 객체 저장소를 읽기만 한다면 삭제 권한까지 주지 않는 최소 권한 원칙이 중요합니다.</p>
+<ol class="field-list"><li>사람 계정과 앱이 사용하는 서비스 계정을 구분합니다.</li>
+<li>필요한 리소스와 동작만 허용합니다.</li>
+<li>관리자 계정에는 강한 인증을 요구합니다.</li>
+<li>임시 자격 증명과 키 교체 방식을 고려합니다.</li>
+<li>권한 변경과 접근 기록을 주기적으로 확인합니다.</li>
+</ol>
+<p>클라우드 계정 키가 Git 저장소에 올라가면 외부인이 자원을 생성하거나 데이터를 읽을 수 있어요. 비밀 관리 기능을 쓰고, 노출된 키는 즉시 폐기·교체합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cloud-ch04"><div class="section-number">04</div>
+<div><h2>가용성과 확장: 한 서버에 모든 걸 맡기지 않기</h2>
+<p>로드 밸런서는 여러 앱 서버에 요청을 분배하고 상태가 나쁜 서버를 제외할 수 있어요. 자동 확장은 사용량에 맞춰 실행 인스턴스를 늘리거나 줄입니다. 다만 데이터 저장 위치와 세션 상태를 함께 설계하지 않으면 서버를 늘려도 기능이 깨질 수 있습니다.</p>
+<h3 id="cloud-resilience">장애는 완전히 없애기보다 영향 줄이기</h3>
+<table class="study-table"><thead><tr><th>위험</th>
+<th>완화 방법</th>
+<th>함께 볼 것</th>
+</tr>
+</thead>
+<tbody><tr><td>서버 한 대 중단</td>
+<td>여러 인스턴스·상태 확인</td>
+<td>세션·파일 공유</td>
+</tr>
+<tr><td>한 가용 구역 장애</td>
+<td>복수 영역 분산</td>
+<td>데이터 복제·비용</td>
+</tr>
+<tr><td>DB 장애</td>
+<td>관리형 복구·백업</td>
+<td>복원 목표와 테스트</td>
+</tr>
+<tr><td>급격한 트래픽</td>
+<td>자동 확장·요청 제한</td>
+<td>DB와 외부 API 용량</td>
+</tr>
+</tbody>
+</table>
+<p>복제와 이중화는 가용성을 높일 수 있지만 구성·비용·데이터 일관성을 복잡하게 합니다. 필요한 서비스 수준을 정하고 그에 맞게 선택합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cloud-ch05"><div class="section-number">05</div>
+<div><h2>관찰과 비용: 사용량은 숫자로 나타나요</h2>
+<p>클라우드 비용은 실행 시간, 저장 공간, 요청량, 데이터 전송량 등에 따라 달라질 수 있어요. 사용하지 않는 서버와 저장소, 과도한 로그 보관도 비용을 만들 수 있습니다.</p>
+<h3 id="cloud-cost">로그·메트릭과 예산 알림</h3>
+<table class="study-table"><thead><tr><th>항목</th>
+<th>질문</th>
+<th>관리 습관</th>
+</tr>
+</thead>
+<tbody><tr><td>컴퓨트</td>
+<td>요청량에 비해 너무 큰가?</td>
+<td>사용률과 자동 확장 확인</td>
+</tr>
+<tr><td>저장소</td>
+<td>오래된 파일이 쌓이는가?</td>
+<td>수명 주기와 보관 기간 설정</td>
+</tr>
+<tr><td>데이터 전송</td>
+<td>서비스 간 왕복이 과한가?</td>
+<td>요청 경로와 캐시 검토</td>
+</tr>
+<tr><td>로그</td>
+<td>필요 이상으로 오래 보관하나?</td>
+<td>보존 정책과 민감정보 제거</td>
+</tr>
+</tbody>
+</table>
+<p>운영 비용 경보를 설정하고, 태그나 프로젝트 단위로 비용을 추적하세요. 비용 절감 때문에 보안·백업·장애 복구를 없애지 않도록 균형을 잡아야 합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="cloud-ch06"><div class="section-number">06</div>
+<div><h2>클라우드 배포: 코드와 인프라를 함께 재현하기</h2>
+<p>개발·검증·운영 환경을 분리하고 같은 애플리케이션을 설정에 따라 실행합니다. 인프라를 코드로 선언하면 네트워크와 권한 설정을 검토·버전 관리할 수 있지만, 잘못된 선언도 실제 환경에 반영되므로 계획과 승인 과정을 둡니다.</p>
+<div class="field-pipeline"><div><b>코드</b>
+<small>앱·인프라</small>
+</div>
+<i>→</i>
+<div><b>검토</b>
+<small>권한·변경 범위</small>
+</div>
+<i>→</i>
+<div><b>적용</b>
+<small>자원 생성</small>
+</div>
+<i>→</i>
+<div><b>검증</b>
+<small>접근·상태</small>
+</div>
+<i>→</i>
+<div><b>비용 관찰</b>
+<small>사용량</small>
+</div>
+</div>
+<p>클라우드 서비스마다 메뉴와 이름은 다르지만 네트워크, 권한, 컴퓨트, 저장소, 관찰, 비용이라는 기본 질문은 거의 같습니다.</p>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="cloud-glance"><div class="visual-kicker">CLOUD FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>공개 진입점은 좁게,<br><span>내부 데이터는 안전하게</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>서비스를 안전하게 노출하는 예</h2>
+<p>사용자 요청은 공개 지점에서 받고 데이터베이스는 내부에 둬요.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>인터넷</b>
+<small>HTTPS</small>
+</div>
+<i>→</i>
+<div><b>Load Balancer</b>
+<small>공개 서브넷</small>
+</div>
+<i>→</i>
+<div><b>앱 서버</b>
+<small>비공개 네트워크</small>
+</div>
+<i>→</i>
+<div><b>관리형 DB</b>
+<small>내부 접근</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>점검 영역</th>
+<th>질문</th>
+</tr>
+</thead>
+<tbody><tr><td>네트워크</td>
+<td>어떤 주소·포트가 외부에 공개됐나?</td>
+</tr>
+<tr><td>IAM</td>
+<td>각 계정에 필요한 권한만 있나?</td>
+</tr>
+<tr><td>데이터</td>
+<td>백업과 복구가 실제로 가능한가?</td>
+</tr>
+<tr><td>운영</td>
+<td>상태·오류·비용을 관찰하고 있나?</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="lesson-section" id="cloud-extra"><div class="section-number">더 알아보기</div><div><h2>클라우드 제공자와 사용자의 책임 나누기</h2><p>제공자는 물리 장비와 기반 시설을 운영하지만 사용자는 서비스에 따라 계정 권한·네트워크 규칙·데이터 접근·앱 설정을 책임집니다. 관리형 서비스에서도 데이터 접근 권한 설정 책임은 남아요.</p><table class="study-table"><thead><tr><th>영역</th><th>점검</th><th>기본 방향</th></tr></thead><tbody><tr><td>IAM</td><td>필요한 권한만 있나?</td><td>최소 권한</td></tr><tr><td>네트워크</td><td>외부 공개가 꼭 필요한가?</td><td>공개·사설 구간 분리</td></tr><tr><td>비밀</td><td>키가 코드에 남나?</td><td>비밀 저장소와 회전</td></tr><tr><td>비용</td><td>유휴 자원이 있나?</td><td>예산과 알림</td></tr></tbody></table><p>인프라 설정을 코드로 관리하면 변경 리뷰와 이력 추적, 환경 재현이 쉬워집니다.</p></div></section>
+<section class="lesson-section field-section" id="cloud-deeper"><div class="section-number">심화</div><div><h2>장애 복구와 비용을 함께 설계하기</h2><h3>백업과 고가용성은 역할이 달라요</h3><p>여러 가용 영역에 서비스를 배치하면 한 영역 장애를 견디는 데 도움이 되지만 잘못 삭제한 데이터를 복구해 주지는 않습니다. 백업은 특정 시점의 데이터를 되살리는 수단입니다. RPO는 허용 가능한 데이터 손실 범위, RTO는 복구에 허용되는 시간입니다. 실제 복원 훈련으로 절차와 시간을 확인해야 합니다.</p><h3>비용은 컴퓨팅 외에도 쌓여요</h3><p>저장 공간, 요청 수, 데이터 전송, 로그 보관, 관리형 서비스 요금도 확인합니다. 개발 자원은 사용하지 않을 때 중지하고, 로그 보관 기간과 자원별 예산 알림을 설정하세요.</p><ul class="field-list"><li>서비스별 장애 영향과 복구 순서를 문서화합니다.</li><li>공개 주소와 관리자 권한은 필요한 자원에만 부여합니다.</li><li>비용 태그로 팀·서비스별 사용량을 살핍니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="cloud-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>클라우드 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>클라우드</td>
+<td>컴퓨트·저장·네트워크 자원을 필요에 따라 빌려 쓰는 방식.</td>
+</tr>
+<tr><td>가상 머신</td>
+<td>물리 서버 위에서 독립된 컴퓨터처럼 실행되는 환경.</td>
+</tr>
+<tr><td>VPC</td>
+<td>클라우드 안에 구성하는 논리적으로 분리된 네트워크.</td>
+</tr>
+<tr><td>IAM</td>
+<td>사용자와 서비스 계정의 리소스 접근 권한 관리.</td>
+</tr>
+<tr><td>관리형 서비스</td>
+<td>공급자가 운영의 일부를 대신 관리하는 서비스.</td>
+</tr>
+<tr><td>자동 확장</td>
+<td>부하나 정책에 맞춰 실행 자원을 늘리거나 줄이는 기능.</td>
+</tr>
+<tr><td>인프라 코드</td>
+<td>서버·네트워크 등 인프라 구성을 파일로 선언하고 관리.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

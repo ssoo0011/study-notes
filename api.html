@@ -1,0 +1,277 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>API 설계 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">API · CONTENTS</p>
+<h2>API 설계와 연동</h2>
+<nav aria-label="API 설계 목차"><a class="field-start-link" href="#api-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · API 계약</summary>
+<div class="toc-links"><a href="#api-ch01">자원과 경로</a>
+<a href="#api-methods">HTTP 메서드</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · 요청과 응답</summary>
+<div class="toc-links"><a href="#api-ch02">JSON·상태 코드</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 목록과 오류</summary>
+<div class="toc-links"><a href="#api-ch03">페이지 나누기</a>
+<a href="#api-errors">오류 설계</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 반복과 속도 제한</summary>
+<div class="toc-links"><a href="#api-ch04">멱등성</a>
+<a href="#api-rate">Rate Limit</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 보안과 문서</summary>
+<div class="toc-links"><a href="#api-ch05">인증·검증</a>
+<a href="#api-docs">API 문서</a>
+</div>
+</details>
+<a href="#api-glance">그림과 표로 한눈에</a>
+<a href="#api-extra">페이지네이션과 재시도</a>
+<a href="#api-deeper">운영 API 심화</a>
+<a href="#api-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="api-start">
+<h1>API 설계와 연동</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">📮</span>
+<p><strong>좋은 API는 호출하는 사람이 사용법을 추측하지 않게 해요.</strong>
+<br>요청 형식, 인증 방법, 실패 이유와 재시도 가능 여부를 문서와 응답에서 분명히 알려 줍니다.</p>
+</section>
+<section class="lesson-section field-section" id="api-ch01"><div class="section-number">01</div>
+<div><h2>API 계약: 자원과 경로 이름 정하기</h2>
+<p>REST 스타일 API에서는 대개 다룰 대상(자원)을 명사 경로로 나타내고, HTTP 메서드가 원하는 동작을 나타냅니다. 모든 API가 REST 원칙을 완전히 따르는 것은 아니지만, 일관된 경로와 규칙은 협업을 쉽게 해요.</p>
+<h3 id="api-methods">메서드와 상태 코드가 의도를 설명</h3>
+<table class="study-table"><thead><tr><th>요청</th>
+<th>의미 예</th>
+<th>성공 결과 예</th>
+</tr>
+</thead>
+<tbody><tr><td><code>GET /posts/42</code>
+</td>
+<td>42번 게시글 조회</td>
+<td>200 OK</td>
+</tr>
+<tr><td><code>POST /posts</code>
+</td>
+<td>게시글 생성 요청</td>
+<td>201 Created</td>
+</tr>
+<tr><td><code>PUT /posts/42</code>
+</td>
+<td>전체 상태 교체</td>
+<td>200 또는 204</td>
+</tr>
+<tr><td><code>PATCH /posts/42</code>
+</td>
+<td>일부 내용 수정</td>
+<td>200 또는 204</td>
+</tr>
+<tr><td><code>DELETE /posts/42</code>
+</td>
+<td>게시글 삭제</td>
+<td>204 또는 정책에 맞는 응답</td>
+</tr>
+</tbody>
+</table>
+<p>메서드의 실제 의미는 API 계약과 일관돼야 해요. GET은 조회만 수행하고 서버 상태를 바꾸지 않아야 캐시나 재시도 동작을 예측할 수 있습니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="api-ch02"><div class="section-number">02</div>
+<div><h2>요청과 응답: 데이터 형식과 오류를 분명히</h2>
+<p>요청에는 경로 매개변수, 쿼리 매개변수, 헤더, 본문을 사용할 수 있어요. JSON은 본문에서 흔히 쓰이는 데이터 형식입니다. 어느 필드가 필수인지, 길이와 값의 범위는 무엇인지 계약에 적습니다.</p>
+<div class="field-code"><div class="field-code-label">요청 JSON과 응답 JSON 예</div>
+<pre><code>POST /api/posts
+Content-Type: application/json
+
+{"title":"첫 글","content":"안녕하세요"}
+
+HTTP/1.1 201 Created
+{"id":42,"title":"첫 글"}</code>
+</pre>
+</div>
+<p>응답은 상태 코드로 큰 결과를 나타내고, 본문은 필요한 데이터를 전달해요. 클라이언트가 표시할 메시지와 개발자가 문제를 찾을 식별자를 구분하고, 내부 시스템 정보는 노출하지 않습니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="api-ch03"><div class="section-number">03</div>
+<div><h2>목록 조회와 오류 응답</h2>
+<p>목록이 커지면 한 번에 모든 행을 보내지 말고 페이지를 나누세요. 정렬 기준과 페이지 크기 최대값을 정하고, 데이터가 계속 추가될 때 중복·누락이 얼마나 허용되는지 고려합니다.</p>
+<h3>페이지 번호 방식과 커서 방식</h3>
+<table class="study-table"><thead><tr><th>방식</th>
+<th>설명</th>
+<th>고려점</th>
+</tr>
+</thead>
+<tbody><tr><td>offset / page</td>
+<td>몇 번째 묶음인지 요청</td>
+<td>뒤쪽 페이지가 느려질 수 있고 데이터 삽입 영향</td>
+</tr>
+<tr><td>cursor</td>
+<td>마지막으로 본 항목 다음부터 요청</td>
+<td>정렬 기준·커서 값 설계 필요</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-errors">오류는 예측 가능하게 표현</h3>
+<p>400은 잘못된 입력, 401은 인증 문제, 403은 권한 거부, 404는 대상 없음, 500대는 서버 문제에 주로 사용해요. 일관된 오류 형식에 코드·설명·요청 식별자를 담으면 클라이언트와 운영자가 대응하기 쉽습니다.</p>
+<table class="study-table"><thead><tr><th>오류 필드 예</th>
+<th>용도</th>
+<th>노출 주의</th>
+</tr>
+</thead>
+<tbody><tr><td>code</td>
+<td>기계가 분기할 안정된 코드</td>
+<td>메시지 문구 변경과 분리</td>
+</tr>
+<tr><td>message</td>
+<td>사용자가 이해할 설명</td>
+<td>내부 SQL·경로 금지</td>
+</tr>
+<tr><td>requestId</td>
+<td>로그에서 요청 찾기</td>
+<td>개인 정보가 들어가지 않게</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="api-ch04"><div class="section-number">04</div>
+<div><h2>재시도와 중복 방지: 네트워크는 응답을 잃을 수 있어요</h2>
+<p>클라이언트가 요청을 보냈는데 응답을 받지 못하면 서버가 처리했는지 알 수 없을 수 있어요. 단순히 다시 보내면 결제가 두 번 처리되는 식의 중복 동작이 생길 수 있습니다.</p>
+<h3 id="api-rate">멱등성 키와 요청 제한</h3>
+<p>중요한 생성 요청에 고유한 멱등성 키를 함께 보내고 서버가 처리 결과를 기록하면 같은 요청 재시도에서 중복 처리를 줄일 수 있어요. Rate Limit은 한 사용자나 IP가 일정 시간에 보낼 수 있는 요청량을 제한해 남용과 과부하를 줄입니다.</p>
+<table class="study-table"><thead><tr><th>상황</th>
+<th>설계 질문</th>
+<th>대응 방향</th>
+</tr>
+</thead>
+<tbody><tr><td>요청 시간 초과</td>
+<td>서버 작업은 성공했을까?</td>
+<td>작업 종류별 재시도 정책</td>
+</tr>
+<tr><td>결제 중복</td>
+<td>동일 작업임을 어떻게 알아볼까?</td>
+<td>멱등 키와 결과 저장</td>
+</tr>
+<tr><td>폭주 요청</td>
+<td>얼마까지 허용할까?</td>
+<td>Rate Limit과 Retry-After</td>
+</tr>
+<tr><td>너무 큰 응답</td>
+<td>얼마나 나눠서 보낼까?</td>
+<td>페이지 크기 제한</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="api-ch05"><div class="section-number">05</div>
+<div><h2>인증·검증·문서화</h2>
+<p>API의 모든 입력은 서버에서 검증하고, 자원 소유자와 사용자 권한을 확인해요. 브라우저 화면에서 버튼을 감추는 것만으로는 API 접근을 막을 수 없습니다. 민감한 값은 HTTPS로 보호하고 로그·응답에 노출하지 않아요.</p>
+<h3 id="api-docs">문서는 동작 가능한 계약서</h3>
+<p>좋은 API 문서에는 경로와 메서드, 입력 필드와 제약, 인증 방식, 성공·오류 응답, 예시가 있어요. OpenAPI 형식은 HTTP API를 기계가 읽을 수 있게 기술하고 문서·도구와 연결하는 데 사용됩니다.</p>
+<ol class="field-list"><li>호출 주체와 필요한 기능을 정의합니다.</li>
+<li>요청·응답 데이터 형식과 상태 코드를 정합니다.</li>
+<li>인증·인가, 검증, 멱등성과 제한을 고려합니다.</li>
+<li>실제 예시와 오류 사례를 문서로 공유합니다.</li>
+<li>호환되지 않는 변경은 버전·전환 계획을 세웁니다.</li>
+</ol>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="api-glance"><div class="visual-kicker">API FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>명확한 약속이<br><span>안전한 연동을 만들어요</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>한 요청의 왕복</h2>
+<p>계약을 확인하고, 검증하고, 결과나 오류를 같은 규칙으로 돌려줘요.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>클라이언트</b>
+<small>요청 계약</small>
+</div>
+<i>→</i>
+<div><b>인증·검증</b>
+<small>신원·입력</small>
+</div>
+<i>→</i>
+<div><b>처리</b>
+<small>업무 규칙</small>
+</div>
+<i>→</i>
+<div><b>응답</b>
+<small>상태·본문</small>
+</div>
+<i>→</i>
+<div><b>클라이언트</b>
+<small>성공·오류 반응</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>설계 항목</th>
+<th>미리 정할 내용</th>
+</tr>
+</thead>
+<tbody><tr><td>자원</td>
+<td>무엇을 다루고 어떤 경로로 부를까?</td>
+</tr>
+<tr><td>요청</td>
+<td>어떤 메서드·입력·권한이 필요한가?</td>
+</tr>
+<tr><td>응답</td>
+<td>성공·오류를 어떻게 알릴까?</td>
+</tr>
+<tr><td>재시도</td>
+<td>중복 실행을 어떻게 막을까?</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="lesson-section" id="api-extra"><div class="section-number">더 알아보기</div><div><h2>목록 API와 재시도는 처음부터 설계해요</h2><p>데이터가 많을 때는 페이지 크기와 정렬 기준을 정해 일부만 반환하고 다음 페이지를 이어 읽을 커서나 페이지 번호를 제공합니다.</p><div class="field-code"><div class="field-code-label">커서 기반 목록</div><pre><code>GET /api/orders?limit=20&amp;after=ord_1042
+{
+  "items": [{"id": "ord_1043", "total": 18000}],
+  "nextCursor": "ord_1060"
+}</code></pre></div><p>목록이 자주 변하면 페이지 번호 방식은 중복이나 누락이 생길 수 있고 커서 방식은 마지막 정렬 위치에서 이어 읽기 좋습니다. 결제처럼 중복 실행이 위험한 요청은 멱등 키로 재시도를 구분할 수 있어요.</p><p class="field-note"><b>오류 응답</b> 상태 코드와 일관된 오류 형식에 안전한 메시지와 추적 ID를 담고 내부 스택 추적은 노출하지 마세요.</p></div></section>
+<section class="lesson-section field-section" id="api-deeper"><div class="section-number">심화</div><div><h2>운영 환경에서 안전한 API 설계</h2><h3>인증과 권한 확인은 다릅니다</h3><p>인증은 요청자가 누구인지 확인하고, 인가는 그 주체가 특정 자원에 어떤 작업을 할 수 있는지 확인합니다. 로그인 여부만 확인하면 다른 사람의 식별자를 바꿔 요청하는 접근을 막지 못할 수 있어요. 서버는 인증된 사용자와 자원의 소유 관계를 확인하고, 브라우저 쿠키 인증에는 CSRF 방어도 함께 적용해야 합니다.</p><h3>호환성과 관찰 가능성을 함께 설계해요</h3><p>기존 응답 필드를 삭제하거나 의미를 바꾸면 클라이언트가 깨질 수 있습니다. 새 필드는 선택적으로 추가하고 폐기 예정 필드는 유예 기간과 공지를 둡니다. 오류 코드와 요청 ID를 응답·로그에 연결하면 장애 원인을 찾기 쉬워집니다.</p><ul class="field-list"><li>개인정보·토큰·비밀번호는 로그에 남기지 않습니다.</li><li>요청 크기와 대기 시간을 제한합니다.</li><li>재시도로 중복 작업이 생기지 않게 멱등성을 고려합니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="api-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>API 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>API</td>
+<td>프로그램 간 기능·데이터 사용을 위한 약속.</td>
+</tr>
+<tr><td>REST</td>
+<td>자원 중심 웹 API를 설계할 때 참고하는 아키텍처 스타일.</td>
+</tr>
+<tr><td>멱등성</td>
+<td>같은 요청을 반복해도 최종 효과가 같은 성질.</td>
+</tr>
+<tr><td>페이지네이션</td>
+<td>큰 목록을 작은 단위로 나누어 조회하는 방법.</td>
+</tr>
+<tr><td>Rate Limit</td>
+<td>일정 시간에 허용할 요청 횟수를 제한하는 정책.</td>
+</tr>
+<tr><td>OpenAPI</td>
+<td>HTTP API 계약을 기술하는 표준 형식.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

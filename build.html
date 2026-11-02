@@ -1,0 +1,303 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>빌드와 개발 도구 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">BUILD · CONTENTS</p>
+<h2>빌드와 개발 도구</h2>
+<nav aria-label="빌드 도구 목차"><a class="field-start-link" href="#build-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 빌드란?</summary>
+<div class="toc-links"><a href="#build-ch01">소스에서 실행 파일</a>
+<a href="#build-build">컴파일·패키징</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · Maven과 Gradle</summary>
+<div class="toc-links"><a href="#build-ch02">빌드 도구 비교</a>
+<a href="#build-deps">의존성 관리</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 설정과 프로필</summary>
+<div class="toc-links"><a href="#build-ch03">환경별 구성</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 개발 루프</summary>
+<div class="toc-links"><a href="#build-ch04">IDE·터미널</a>
+<a href="#build-debug">작은 반복</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · CI와 자동 배포</summary>
+<div class="toc-links"><a href="#build-ch05">자동 검사</a>
+<a href="#build-pipeline">파이프라인</a>
+</div>
+</details>
+<a href="#build-glance">그림과 표로 한눈에</a>
+<a href="#build-extra">재현 가능한 빌드</a>
+<a href="#build-deeper">빌드 심화</a>
+<a href="#build-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="build-start">
+<h1>빌드와 개발 도구</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">⚙️</span>
+<p><strong>빌드는 코드를 실행 가능한 결과물로 만드는 과정이에요.</strong>
+<br>테스트와 리소스 복사, 의존성 준비, 패키징까지 포함할 수 있습니다. 프로젝트의 빌드 파일을 읽으면 앱이 어떤 도구와 라이브러리에 기대는지 알 수 있어요.</p>
+</section>
+<section class="lesson-section field-section" id="build-ch01"><div class="section-number">01</div>
+<div><h2>소스 코드에서 실행 결과까지</h2>
+<p>Java 소스는 컴파일되어 바이트코드가 되고, 라이브러리와 리소스가 준비되어 JAR 같은 배포 파일로 묶일 수 있어요. 빌드 도구는 이 작업의 순서와 옵션을 관리합니다.</p>
+<div class="field-pipeline"><div><b>소스</b>
+<small>.java·설정</small>
+</div>
+<i>→</i>
+<div><b>컴파일</b>
+<small>문법 검사</small>
+</div>
+<i>→</i>
+<div><b>테스트</b>
+<small>동작 확인</small>
+</div>
+<i>→</i>
+<div><b>패키징</b>
+<small>JAR 생성</small>
+</div>
+<i>→</i>
+<div><b>실행</b>
+<small>서버에서 시작</small>
+</div>
+</div>
+<h3 id="build-build">빌드가 도와주는 일</h3>
+<table class="study-table"><thead><tr><th>작업</th>
+<th>무엇을 하나요?</th>
+<th>문제가 나면</th>
+</tr>
+</thead>
+<tbody><tr><td>의존성 해석</td>
+<td>필요한 라이브러리 준비</td>
+<td>버전·저장소 확인</td>
+</tr>
+<tr><td>컴파일</td>
+<td>소스 문법과 타입 검사</td>
+<td>첫 오류 지점부터 읽기</td>
+</tr>
+<tr><td>테스트</td>
+<td>자동 테스트 실행</td>
+<td>실패 원인과 테스트 데이터 확인</td>
+</tr>
+<tr><td>패키징</td>
+<td>배포 단위 파일 생성</td>
+<td>포함 리소스와 설정 점검</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="build-ch02"><div class="section-number">02</div>
+<div><h2>Maven과 Gradle: 빌드 규칙 선언하기</h2>
+<p>Maven과 Gradle은 Java 프로젝트에서 널리 쓰이는 빌드 도구예요. 어떤 소스와 라이브러리를 쓰는지, 무엇을 빌드할지 파일에 기록하고 명령 한 번으로 같은 절차를 실행할 수 있습니다.</p>
+<table class="study-table"><thead><tr><th>비교</th>
+<th>Maven</th>
+<th>Gradle</th>
+</tr>
+</thead>
+<tbody><tr><td>주 설정 파일</td>
+<td><code>pom.xml</code>
+</td>
+<td><code>build.gradle</code>
+ 또는 Kotlin DSL 파일</td>
+</tr>
+<tr><td>표현</td>
+<td>XML 중심</td>
+<td>Groovy 또는 Kotlin DSL</td>
+</tr>
+<tr><td>특징</td>
+<td>구조와 규칙이 비교적 정형화</td>
+<td>유연한 빌드 로직 작성 가능</td>
+</tr>
+<tr><td>공통점</td>
+<td colspan="2">의존성 관리, 테스트, 컴파일, 패키징 자동화</td>
+</tr>
+</tbody>
+</table>
+<h3 id="build-deps">의존성: 다른 사람이 만든 기능 가져오기</h3>
+<p>라이브러리는 이미 만들어진 기능 묶음이에요. 빌드 도구는 지정된 버전을 내려받고 프로젝트가 사용하도록 연결합니다. 필요한 라이브러리만 추가하고, 직접 관리하는 버전과 라이선스, 알려진 취약점도 살펴야 합니다.</p>
+<div class="field-code"><div class="field-code-label">개념 예시 · 빌드 파일에서 라이브러리 선언</div>
+<pre><code>dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}</code>
+</pre>
+<p>실제 문법과 사용 가능한 버전은 프로젝트에서 쓰는 Gradle 방식과 Spring Boot 버전에 맞춰 확인하세요.</p>
+</div>
+</div>
+</section>
+<section class="lesson-section field-section" id="build-ch03"><div class="section-number">03</div>
+<div><h2>환경 설정: 같은 앱을 다른 장소에서 실행하기</h2>
+<p>내 컴퓨터, 테스트 서버, 운영 서버는 주소와 비밀 값이 다를 수 있어요. 코드를 환경 값에 맞춰 다시 수정하지 말고 설정 파일이나 환경 변수로 외부에서 값을 받습니다.</p>
+<div class="field-code"><div class="field-code-label">비밀 정보를 코드에 적지 않는 예</div>
+<pre><code>DB_URL=${DB_URL}
+DB_USERNAME=${DB_USERNAME}
+DB_PASSWORD=${DB_PASSWORD}</code>
+</pre>
+</div>
+<p>설정에 개발용 데이터베이스 주소가 운영에 반영되는 실수가 없도록 환경별 설정을 검토해요. 비밀번호와 키는 저장소에 올리지 말고 안전한 비밀 저장소에서 공급합니다.</p>
+<table class="study-table"><thead><tr><th>구분</th>
+<th>개발 환경</th>
+<th>운영 환경</th>
+</tr>
+</thead>
+<tbody><tr><td>데이터</td>
+<td>테스트용·가짜 데이터</td>
+<td>실제 사용자 데이터</td>
+</tr>
+<tr><td>로그</td>
+<td>상세한 진단 정보</td>
+<td>민감정보 제거, 적정 수준</td>
+</tr>
+<tr><td>비밀 값</td>
+<td>개발 전용 키</td>
+<td>접근 통제된 운영 키</td>
+</tr>
+<tr><td>실행 주소</td>
+<td>로컬 또는 검증 서버</td>
+<td>사용자 서비스 주소</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="build-ch04"><div class="section-number">04</div>
+<div><h2>IDE와 터미널: 도구를 이해하며 개발하기</h2>
+<p>IDE는 코드 편집, 자동 완성, 검색, 디버깅, 빌드를 묶어 제공하는 개발 환경이에요. 터미널은 명령을 직접 실행할 수 있어 자동화와 서버 환경에 유용합니다. 도구가 대신한 작업이 무엇인지 알면 오류를 만났을 때 해결하기 쉬워요.</p>
+<h3 id="build-debug">짧은 피드백 루프</h3>
+<ol class="field-list"><li>작은 코드 변경을 합니다.</li>
+<li>컴파일로 기본 오류를 찾습니다.</li>
+<li>관련 테스트를 실행합니다.</li>
+<li>동작을 직접 확인하고 로그를 살핍니다.</li>
+<li>의미 있는 단위로 Git에 기록합니다.</li>
+</ol>
+<p>프로젝트의 실행 방법을 README에 적고, 팀원이 새 환경에서도 같은 명령으로 실행 가능한지 확인하세요. 재현이 가능한 빌드는 협업의 중요한 기반입니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="build-ch05"><div class="section-number">05</div>
+<div><h2>CI와 CD: 반복 확인과 전달 자동화</h2>
+<p>CI(지속적 통합)는 변경이 저장소에 올라올 때 자동 빌드·테스트를 실행해 문제를 일찍 발견하는 방식이에요. CD는 검증된 변경을 배포 준비하거나 자동 배포하는 흐름을 뜻하며, 조직마다 풀어 쓰는 범위가 다를 수 있습니다.</p>
+<h3 id="build-pipeline">자동화 파이프라인의 예</h3>
+<div class="field-pipeline"><div><b>변경 공유</b>
+<small>Pull Request</small>
+</div>
+<i>→</i>
+<div><b>빌드</b>
+<small>의존성·컴파일</small>
+</div>
+<i>→</i>
+<div><b>검사</b>
+<small>테스트·분석</small>
+</div>
+<i>→</i>
+<div><b>배포</b>
+<small>승인·실행</small>
+</div>
+<i>→</i>
+<div><b>관찰</b>
+<small>로그·상태</small>
+</div>
+</div>
+<p>자동화는 실수를 줄이지만 운영 비밀 값 노출, 잘못된 배포, 데이터 손상 같은 위험을 없애지는 않아요. 배포 승인, 접근 권한, 실패 시 되돌리기 절차를 함께 설계합니다.</p>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="build-glance"><div class="visual-kicker">BUILD FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>한 번 정의한 절차를<br><span>매번 똑같이 실행해요</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>빌드부터 배포 후 확인까지</h2>
+<p>사람이 놓칠 수 있는 반복 작업을 자동화합니다.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>코드 변경</b>
+<small>Git</small>
+</div>
+<i>→</i>
+<div><b>컴파일</b>
+<small>Build</small>
+</div>
+<i>→</i>
+<div><b>테스트</b>
+<small>CI</small>
+</div>
+<i>→</i>
+<div><b>패키지</b>
+<small>JAR·이미지</small>
+</div>
+<i>→</i>
+<div><b>배포</b>
+<small>서버</small>
+</div>
+<i>→</i>
+<div><b>관찰</b>
+<small>로그·지표</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>실패 단계</th>
+<th>우선 점검</th>
+</tr>
+</thead>
+<tbody><tr><td>의존성 다운로드</td>
+<td>저장소 연결·버전·네트워크</td>
+</tr>
+<tr><td>컴파일</td>
+<td>오류 메시지의 첫 원인과 코드 줄</td>
+</tr>
+<tr><td>테스트</td>
+<td>기대 결과·설정·테스트 데이터</td>
+</tr>
+<tr><td>배포 후 시작</td>
+<td>환경 변수·포트·서버 로그</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="lesson-section" id="build-extra"><div class="section-number">더 알아보기</div><div><h2>다른 컴퓨터에서도 같은 빌드를 만들기</h2><p>JDK·빌드 도구·의존성·환경 변수가 다르면 같은 소스도 CI에서 다르게 동작할 수 있어요. Wrapper로 빌드 도구를 맞추고 버전을 명시하며 비밀 값은 CI 비밀 저장소로 전달하세요.</p><ul class="field-list"><li>JDK와 빌드 도구 버전을 고정합니다.</li><li>CI에서 컴파일·테스트·패키징을 자동 수행합니다.</li><li>검증 실패 시 배포를 중단합니다.</li><li>결과물에 커밋 식별자를 남겨 배포본을 추적합니다.</li></ul><p>캐시는 빌드를 빠르게 하지만 무효화 조건이 부정확하면 오래된 결과를 숨길 수 있어요. CI는 변경을 검증하고 CD는 검증된 결과를 전달하거나 배포합니다.</p></div></section>
+<section class="lesson-section field-section" id="build-deeper"><div class="section-number">심화</div><div><h2>같은 소스에서 같은 결과를 만드는 빌드</h2><h3>의존성 버전을 고정하고 출처를 살펴요</h3><p>넓은 버전 범위는 시간이 지나며 다른 라이브러리를 가져올 수 있습니다. 잠금 파일은 실제 해결된 버전을 기록해 개발자 컴퓨터와 CI의 차이를 줄입니다. 직접 의존성과 전이 의존성을 구분하고, 사용하지 않는 패키지는 제거하세요. 외부 패키지의 유지 상태와 알려진 취약점도 확인합니다.</p><h3>검증한 아티팩트를 환경별로 승격해요</h3><p>테스트한 결과물을 스테이징과 운영에 그대로 전달하면 환경마다 다시 빌드해서 생기는 차이를 줄일 수 있습니다. 설정과 비밀 값은 실행 환경에서 주입하고 이미지나 저장소에 넣지 않습니다.</p><ul class="field-list"><li>Wrapper와 JDK 버전을 저장소에 명시합니다.</li><li>CI에서 깨끗한 체크아웃으로 빌드와 테스트를 실행합니다.</li><li>배포 결과물에 버전과 커밋 정보를 남겨 추적과 롤백을 돕습니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="build-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>빌드 도구 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>빌드</td>
+<td>소스와 설정을 실행·배포 가능한 결과물로 만드는 작업.</td>
+</tr>
+<tr><td>컴파일</td>
+<td>프로그래밍 언어 코드를 다른 실행 형태로 변환하며 검사.</td>
+</tr>
+<tr><td>의존성</td>
+<td>프로젝트가 사용하는 외부 라이브러리나 모듈.</td>
+</tr>
+<tr><td>Maven</td>
+<td>Java 프로젝트의 빌드와 의존성을 관리하는 도구.</td>
+</tr>
+<tr><td>Gradle</td>
+<td>빌드 작업과 의존성을 구성하는 빌드 자동화 도구.</td>
+</tr>
+<tr><td>JAR</td>
+<td>Java 클래스와 리소스를 묶는 아카이브 형식.</td>
+</tr>
+<tr><td>CI/CD</td>
+<td>변경 검사와 배포 과정을 자동화하는 실천·도구 모음.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

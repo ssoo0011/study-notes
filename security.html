@@ -1,0 +1,291 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>웹 보안 기초 · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">SECURITY · CONTENTS</p>
+<h2>웹 보안 기초</h2>
+<nav aria-label="웹 보안 목차"><a class="field-start-link" href="#security-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 보안 목표</summary>
+<div class="toc-links"><a href="#sec-ch01">기밀성·무결성·가용성</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · 인증과 권한</summary>
+<div class="toc-links"><a href="#sec-ch02">인증·인가</a>
+<a href="#sec-password">비밀번호</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 입력과 브라우저 공격</summary>
+<div class="toc-links"><a href="#sec-ch03">SQL Injection·XSS</a>
+<a href="#sec-csrf">CSRF</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 통신과 비밀 정보</summary>
+<div class="toc-links"><a href="#sec-ch04">HTTPS·TLS</a>
+<a href="#sec-secrets">비밀 값 관리</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 권한과 의존성</summary>
+<div class="toc-links"><a href="#sec-ch05">최소 권한</a>
+<a href="#sec-deps">라이브러리 위험</a>
+</div>
+</details>
+<details class="toc-group"><summary>06 · 보안 점검 습관</summary>
+<div class="toc-links"><a href="#sec-ch06">위협 모델링</a>
+</div>
+</details>
+<a href="#security-glance">그림과 표로 한눈에</a>
+<a href="#security-extra">공격별 방어</a>
+<a href="#security-deeper">위협 모델 심화</a>
+<a href="#security-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="security-start">
+<h1>웹 보안 기초</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">🛡️</span>
+<p><strong>사용자가 보낸 데이터는 신뢰하지 말고 검증하세요.</strong>
+<br>브라우저에서 숨긴 버튼도 직접 HTTP 요청을 보내면 우회할 수 있어요. 중요한 검증과 권한 확인은 서버에서 수행해야 합니다.</p>
+</section>
+<section class="lesson-section field-section" id="sec-ch01"><div class="section-number">01</div>
+<div><h2>보안의 목표: 기밀성·무결성·가용성</h2>
+<p>보안은 비밀번호를 감추는 것만이 아니에요. 승인되지 않은 사람이 읽지 못하게 하고, 데이터가 몰래 바뀌지 않게 하며, 필요할 때 서비스를 쓸 수 있게 지킵니다.</p>
+<table class="study-table"><thead><tr><th>목표</th>
+<th>쉬운 뜻</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr><td>기밀성</td>
+<td>허가된 사람만 정보 열람</td>
+<td>개인 정보를 권한 없는 사용자에게 감춤</td>
+</tr>
+<tr><td>무결성</td>
+<td>정보가 허가 없이 바뀌지 않음</td>
+<td>주문 금액을 임의로 조작 못 하게 검증</td>
+</tr>
+<tr><td>가용성</td>
+<td>필요한 시점에 시스템을 사용</td>
+<td>장애와 과부하에 대비한 복구 계획</td>
+</tr>
+</tbody>
+</table>
+<p>세 목표 사이에는 균형이 필요해요. 보호를 강화하면서도 정상 사용자가 안전하게 쓸 수 있는 흐름을 설계해야 합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="sec-ch02"><div class="section-number">02</div>
+<div><h2>인증과 인가: 누구인지, 무엇을 허용할지</h2>
+<p><strong>인증</strong>
+은 신원을 확인하는 것, <strong>인가</strong>
+는 그 신원에 어떤 동작을 허용할지 확인하는 것입니다. 서비스는 요청받은 객체가 실제 그 사용자의 것인지 매번 서버에서 검사해야 해요.</p>
+<div class="field-flow"><strong>인증<small>로그인 정보 확인</small>
+</strong>
+<b>→</b>
+<strong>인가<small>역할·자원 권한 확인</small>
+</strong>
+<b>→</b>
+<span>기능 실행<small>허용된 동작</small>
+</span>
+</div>
+<h3 id="sec-password">비밀번호 저장과 로그인 세션</h3>
+<p>비밀번호는 평문으로 저장하지 않아요. 검증된 비밀번호 해시 함수로 단방향 변환하고, 사용자마다 고유한 salt와 적절한 비용 설정을 사용해야 합니다. 일반적인 빠른 해시(SHA-256 등)만 적용하는 것은 비밀번호 저장용 대안이 아닙니다.</p>
+<table class="study-table"><thead><tr><th>방식</th>
+<th>서버가 기억하는 것</th>
+<th>주의할 점</th>
+</tr>
+</thead>
+<tbody><tr><td>세션</td>
+<td>서버 저장 상태와 브라우저 쿠키 식별자</td>
+<td>쿠키 보호·만료·CSRF 고려</td>
+</tr>
+<tr><td>토큰</td>
+<td>서명된 토큰 검증 정보</td>
+<td>유출·만료·폐기와 저장 위치 고려</td>
+</tr>
+<tr><td>비밀번호</td>
+<td>안전한 해시 결과</td>
+<td>원문 또는 복호화 가능한 형태 저장 금지</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="sec-ch03"><div class="section-number">03</div>
+<div><h2>입력 검증: 공격자가 보낸 값도 평범한 입력처럼 보여요</h2>
+<p>입력은 길이·형식·범위·업무 규칙을 검증하세요. 그러나 입력값을 검사하는 것만으로 모든 공격을 막을 수 있는 것은 아니에요. 사용하는 맥락에 맞는 안전한 API와 출력 처리가 함께 필요합니다.</p>
+<h3>SQL Injection</h3>
+<p>사용자 입력을 SQL 문자열에 그대로 이어 붙이면 입력이 SQL 명령의 일부로 해석될 수 있어요. Prepared Statement나 ORM의 파라미터 바인딩을 사용해 데이터와 명령을 분리합니다.</p>
+<div class="field-code"><div class="field-code-label">문자열 결합 대신 파라미터 바인딩</div>
+<pre><code>// 위험한 방식: 입력이 쿼리 문법에 끼어들 수 있음
+"SELECT * FROM users WHERE name = '" + name + "'"
+
+// 안전한 방향: 쿼리와 값 분리
+SELECT * FROM users WHERE name = ?</code>
+</pre>
+</div>
+<p><strong>XSS</strong>
+는 공격자가 넣은 스크립트가 다른 사용자의 브라우저에서 실행되는 문제예요. 출력할 때 HTML 맥락에 맞게 인코딩하고, 신뢰하지 않는 내용을 위험한 HTML로 해석하지 않도록 해야 합니다.</p>
+<h3 id="sec-csrf">CSRF와 사이트 간 요청</h3>
+<p>CSRF는 사용자가 로그인된 브라우저를 속여 원치 않는 상태 변경 요청을 보내게 하는 공격이에요. 쿠키 기반 인증에서는 CSRF 토큰, SameSite 쿠키 설정, 요청 출처 검증 등 적절한 방어를 구성합니다. GET 요청으로 상태를 바꾸지 않는 것도 기본 원칙이에요.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="sec-ch04"><div class="section-number">04</div>
+<div><h2>통신과 비밀 값 보호</h2>
+<p>HTTPS는 HTTP 통신을 TLS로 보호해 전송 중 내용을 암호화하고, 연결한 서버가 인증서에 맞는 서버인지 확인하도록 도와요. 그래도 서버 안에 저장된 데이터를 자동으로 모두 암호화하거나 애플리케이션 버그를 막아 주는 것은 아닙니다.</p>
+<h3 id="sec-secrets">비밀 값은 코드 밖에서 관리</h3>
+<p>데이터베이스 비밀번호, API 키, 서명 키를 코드·Git 기록·로그·스크린샷에 남기지 마세요. 환경 변수나 비밀 관리 도구에서 제공하고 접근 권한을 제한합니다. 노출이 의심되면 기록에서 지우기만 하지 말고 키를 폐기하고 교체해야 합니다.</p>
+<table class="study-table"><thead><tr><th>위험</th>
+<th>예방 습관</th>
+</tr>
+</thead>
+<tbody><tr><td>네트워크 도청</td>
+<td>HTTPS 사용, 인증서 검증</td>
+</tr>
+<tr><td>비밀 값 유출</td>
+<td>저장소 밖에서 관리, 최소 접근</td>
+</tr>
+<tr><td>로그에 개인정보 노출</td>
+<td>필요한 값만 기록하고 민감 정보 마스킹</td>
+</tr>
+<tr><td>오래된 키 재사용</td>
+<td>교체·폐기 절차와 접근 감사</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="sec-ch05"><div class="section-number">05</div>
+<div><h2>최소 권한과 외부 라이브러리</h2>
+<p>계정·프로세스·서비스에는 맡은 일에 필요한 권한만 주세요. 데이터베이스 앱 계정에 모든 테이블 삭제 권한까지 줄 이유가 없다면, 권한을 줄여 사고의 피해 범위를 제한할 수 있습니다.</p>
+<h3 id="sec-deps">의존 라이브러리도 공급망의 일부</h3>
+<p>외부 패키지는 개발 시간을 줄여 주지만 알려진 취약점, 잘못된 업데이트, 출처 위험을 가져올 수 있어요. 필요한 라이브러리만 쓰고 버전을 관리하며, 취약점 알림과 업데이트를 꾸준히 확인합니다.</p>
+<table class="study-table"><thead><tr><th>영역</th>
+<th>기본 점검</th>
+</tr>
+</thead>
+<tbody><tr><td>권한</td>
+<td>사용자·서버·DB 계정의 불필요한 권한 제거</td>
+</tr>
+<tr><td>의존성</td>
+<td>불필요한 패키지 제거, 보안 업데이트 검토</td>
+</tr>
+<tr><td>오류 응답</td>
+<td>스택 추적·SQL·내부 경로 노출 방지</td>
+</tr>
+<tr><td>파일 업로드</td>
+<td>크기·종류·저장 위치와 실행 가능성 점검</td>
+</tr>
+<tr><td>관리 기능</td>
+<td>인증·인가와 접근 기록을 적용</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="sec-ch06"><div class="section-number">06</div>
+<div><h2>보안은 반복 점검과 대응 계획</h2>
+<p>위협 모델링은 무엇을 보호할지, 누가 공격할 수 있는지, 데이터가 어디로 흐르는지, 어떤 약점이 있는지 미리 생각하는 과정이에요. 새 기능마다 작은 위협 검토를 하면 나중의 큰 수정 비용을 줄일 수 있습니다.</p>
+<ol class="field-list"><li>보호할 데이터와 중요한 기능을 적습니다.</li>
+<li>사용자·관리자·외부 시스템 등 행위자를 확인합니다.</li>
+<li>데이터가 이동하고 저장되는 경로를 그립니다.</li>
+<li>인증·권한·입력·비밀 값·로그를 점검합니다.</li>
+<li>사고가 나면 키를 교체하고 서비스를 복구할 순서를 정합니다.</li>
+</ol>
+<p>보안은 한 번 체크하고 끝나는 작업이 아니에요. 새 취약점과 서비스 변경에 따라 패치를 적용하고, 백업 복구와 사고 대응을 연습해야 합니다.</p>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="security-glance"><div class="visual-kicker">SECURITY FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>요청부터 저장까지<br><span>경계를 겹겹이 지켜요</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>사용자 입력을 처리하는 방어 흐름</h2>
+<p>한 가지 방어만 믿지 말고 여러 층에서 확인해요.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>입력</b>
+<small>신뢰하지 않기</small>
+</div>
+<i>→</i>
+<div><b>검증</b>
+<small>형식·권한</small>
+</div>
+<i>→</i>
+<div><b>안전한 API</b>
+<small>쿼리·출력 분리</small>
+</div>
+<i>→</i>
+<div><b>보호</b>
+<small>TLS·최소 권한</small>
+</div>
+<i>→</i>
+<div><b>관찰</b>
+<small>로그·경보</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>위험</th>
+<th>주요 방어</th>
+</tr>
+</thead>
+<tbody><tr><td>SQL Injection</td>
+<td>파라미터 바인딩, 최소 권한</td>
+</tr>
+<tr><td>XSS</td>
+<td>맥락에 맞는 출력 인코딩</td>
+</tr>
+<tr><td>계정 탈취</td>
+<td>비밀번호 해시, 세션·토큰 보호</td>
+</tr>
+<tr><td>비밀 노출</td>
+<td>코드 외부 관리, 교체 절차</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="lesson-section" id="security-extra"><div class="section-number">더 알아보기</div><div><h2>공격 종류에 맞는 방어를 적용해요</h2><p>SQL 문자열에 입력값을 이어 붙이면 입력이 SQL 명령으로 해석될 수 있습니다. 쿼리와 값을 분리하는 매개변수 바인딩을 사용하세요.</p><div class="field-code"><div class="field-code-label">매개변수 쿼리</div><pre><code>SELECT id, name
+FROM users
+WHERE email = ?</code></pre></div><table class="study-table"><thead><tr><th>위협</th><th>주요 방어</th></tr></thead><tbody><tr><td>SQL 인젝션</td><td>매개변수 쿼리와 최소 권한</td></tr><tr><td>XSS</td><td>문맥에 맞는 출력 인코딩</td></tr><tr><td>CSRF</td><td>토큰과 요청 검증</td></tr><tr><td>SSRF</td><td>허용 대상 제한과 주소 검증</td></tr></tbody></table><p>각 공격은 발생 위치와 방어 방법이 다릅니다. 입력 검증 하나에 기대지 말고 각 경계에 맞는 보호를 겹쳐 적용하세요.</p></div></section>
+<section class="lesson-section field-section" id="security-deeper"><div class="section-number">심화</div><div><h2>위협을 먼저 찾고 방어를 여러 겹으로 쌓기</h2><h3>위협 모델은 자산과 공격 경로를 정리해요</h3><p>사용자 정보, 결제 데이터, 관리자 기능처럼 보호할 대상을 정하고 누가 어떤 경로로 악용할 수 있는지 생각합니다. 입력 검증과 권한 검사 누락, 비밀 유출, 과부하를 위험으로 적고 가능성과 영향도에 따라 우선순위를 정하세요. 각 위험에 예방·탐지·복구 방법을 연결하면 대응이 구체적입니다.</p><h3>비밀번호와 비밀 값은 노출돼도 피해를 제한해요</h3><p>비밀번호는 복호화 가능한 형태나 빠른 일반 해시로 저장하지 말고 salt를 사용하는 전용 비밀번호 해시 함수를 사용합니다. API 키는 코드에 넣지 않고 제한된 비밀 저장소에서 관리하며 노출되면 폐기하고 교체합니다. 입력은 서버에서 다시 검증하고 출력 문맥에 맞게 인코딩해 스크립트 삽입을 막습니다.</p><ul class="field-list"><li>최소 권한과 다중 인증으로 계정 탈취의 영향을 줄입니다.</li><li>로그에서 인증 정보와 개인 데이터를 제외합니다.</li><li>패치와 복구 훈련을 정기적으로 수행합니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="security-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>보안 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>인증</td>
+<td>사용자의 신원을 확인하는 절차.</td>
+</tr>
+<tr><td>인가</td>
+<td>확인된 사용자가 특정 행동을 해도 되는지 결정.</td>
+</tr>
+<tr><td>해시</td>
+<td>입력에서 고정 길이 결과를 만드는 단방향 변환.</td>
+</tr>
+<tr><td>SQL Injection</td>
+<td>입력이 쿼리 명령으로 해석되도록 악용하는 공격.</td>
+</tr>
+<tr><td>XSS</td>
+<td>공격 스크립트가 다른 사용자의 브라우저에서 실행되는 취약점.</td>
+</tr>
+<tr><td>CSRF</td>
+<td>로그인된 사용자의 브라우저를 속여 원치 않는 요청을 보내는 공격.</td>
+</tr>
+<tr><td>최소 권한</td>
+<td>업무에 필요한 권한만 부여하는 원칙.</td>
+</tr>
+<tr><td>TLS</td>
+<td>네트워크 연결을 암호화하고 상대 인증을 돕는 보안 프로토콜.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

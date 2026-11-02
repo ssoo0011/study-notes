@@ -1,0 +1,374 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>데이터베이스와 SQL · 개발 공부 노트</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/visual-guide.css"><link rel="stylesheet" href="css/course-single.css"><link rel="stylesheet" href="css/field-course.css">  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page"><header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">{ }</span>
+ 개발 공부 노트</a>
+<a class="back-link" href="index.html">← 과목 목록</a>
+</header>
+<div class="lesson-layout course-onepage"><aside class="lesson-sidebar course-sidebar"><p class="eyebrow">DATABASE · CONTENTS</p>
+<h2>DB와 SQL</h2>
+<nav aria-label="데이터베이스 목차"><a class="field-start-link" href="#db-start">처음 오셨나요?</a>
+<details class="toc-group"><summary>01 · 관계형 DB</summary>
+<div class="toc-links"><a href="#db-ch01">테이블과 관계</a>
+<a href="#db-keys">기본키·외래키</a>
+</div>
+</details>
+<details class="toc-group"><summary>02 · SQL 조회</summary>
+<div class="toc-links"><a href="#db-ch02">SELECT·WHERE</a>
+<a href="#db-joins">JOIN</a>
+</div>
+</details>
+<details class="toc-group"><summary>03 · 변경과 무결성</summary>
+<div class="toc-links"><a href="#db-ch03">INSERT·UPDATE·DELETE</a>
+<a href="#db-constraints">제약 조건</a>
+</div>
+</details>
+<details class="toc-group"><summary>04 · 설계와 정규화</summary>
+<div class="toc-links"><a href="#db-ch04">테이블 나누기</a>
+<a href="#db-normalize">정규화</a>
+</div>
+</details>
+<details class="toc-group"><summary>05 · 인덱스와 성능</summary>
+<div class="toc-links"><a href="#db-ch05">인덱스</a>
+<a href="#db-query">실행 계획</a>
+</div>
+</details>
+<details class="toc-group"><summary>06 · 트랜잭션</summary>
+<div class="toc-links"><a href="#db-ch06">ACID</a>
+<a href="#db-isolation">동시 작업</a>
+</div>
+</details>
+<details class="toc-group"><summary>07 · 백업과 안전</summary>
+<div class="toc-links"><a href="#db-ch07">접근·백업</a>
+</div>
+</details>
+<a href="#db-glance">그림과 표로 한눈에</a>
+<a href="#database-extra">인덱스와 실행 계획</a>
+<a href="#db-deeper">트랜잭션 심화</a>
+<a href="#db-terms">용어사전</a></nav>
+</aside>
+<main class="lesson-content course-content field-content"><section class="lesson-hero course-title" id="db-start">
+<h1>데이터베이스와 SQL</h1>
+</section>
+<section class="callout field-callout"><span class="callout-icon">🗄️</span>
+<p><strong>데이터는 한 번 잃으면 되돌리기 어려울 수 있어요.</strong>
+<br>실제 데이터를 수정하는 쿼리는 대상과 조건을 확인하고, 중요한 변경은 트랜잭션과 백업 계획을 생각한 뒤 실행하세요.</p>
+</section>
+<section class="lesson-section field-section" id="db-ch01"><div class="section-number">01</div>
+<div><h2>관계형 데이터베이스: 표로 사실을 정리하기</h2>
+<p>관계형 데이터베이스는 데이터를 테이블(표), 행(row), 열(column)로 표현해요. 각 테이블은 한 종류의 대상을 정리하고, 키를 통해 다른 테이블과 관계를 맺습니다.</p>
+<h3 id="db-keys">기본키와 외래키</h3>
+<p><strong>기본키</strong>
+는 행 하나를 구별하는 값이고, <strong>외래키</strong>
+는 다른 테이블의 행을 가리키는 값이에요. 예를 들어 주문 테이블이 회원 ID를 저장하면, 주문과 회원을 연결할 수 있습니다.</p>
+<table class="study-table"><thead><tr><th>members</th>
+<th></th>
+<th>orders</th>
+</tr>
+</thead>
+<tbody><tr><td>id (기본키)</td>
+<td>← 연결 ←</td>
+<td>member_id (외래키)</td>
+</tr>
+<tr><td>name</td>
+<td></td>
+<td>total_price</td>
+</tr>
+<tr><td>email</td>
+<td></td>
+<td>created_at</td>
+</tr>
+</tbody>
+</table>
+<p>데이터베이스 제약 조건은 잘못된 데이터를 저장하지 못하게 도와요. 예를 들어 외래키는 존재하지 않는 회원을 가리키는 주문을 제한할 수 있습니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="db-ch02"><div class="section-number">02</div>
+<div><h2>SQL 조회: 필요한 행과 열 고르기</h2>
+<p>SQL은 관계형 데이터베이스에 원하는 작업을 설명하는 언어예요. <code>SELECT</code>
+로 열을 고르고, <code>FROM</code>
+으로 테이블을 지정하며, <code>WHERE</code>
+로 조건을 걸 수 있습니다.</p>
+<div class="field-code"><div class="field-code-label">조건에 맞는 회원 조회</div>
+<pre><code>SELECT id, name
+FROM members
+WHERE status = 'ACTIVE'
+ORDER BY created_at DESC
+LIMIT 20;</code>
+</pre>
+</div>
+<h3 id="db-joins">JOIN: 관련된 여러 표 이어 보기</h3>
+<p>회원 이름과 주문 금액은 다른 테이블에 저장할 수 있어요. JOIN은 공통 키를 기준으로 관련 행들을 이어서 조회합니다.</p>
+<div class="field-code"><div class="field-code-label">주문과 회원 이름 함께 보기</div>
+<pre><code>SELECT m.name, o.total_price
+FROM orders o
+JOIN members m ON m.id = o.member_id
+WHERE o.id = 42;</code>
+</pre>
+</div>
+<p>조회에 필요하지 않은 모든 열을 무작정 가져오지 말고, 어떤 조건과 정렬이 필요한지 명확히 하세요. 서비스가 커지면 쿼리 성능과 접근 권한도 중요합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="db-ch03"><div class="section-number">03</div>
+<div><h2>데이터 변경과 제약 조건</h2>
+<p><code>INSERT</code>
+는 추가, <code>UPDATE</code>
+는 수정, <code>DELETE</code>
+는 삭제예요. 변경 쿼리에서 <code>WHERE</code>
+를 빠뜨리면 의도보다 많은 행을 바꿀 수 있으므로 실행 대상부터 먼저 확인합니다.</p>
+<div class="field-code"><div class="field-code-label">안전한 변경 전, 같은 조건으로 조회해 보기</div>
+<pre><code>SELECT id, status FROM orders WHERE id = 42;
+
+UPDATE orders
+SET status = 'PAID'
+WHERE id = 42;</code>
+</pre>
+</div>
+<h3 id="db-constraints">제약 조건은 데이터 규칙을 지켜요</h3>
+<table class="study-table"><thead><tr><th>제약 조건</th>
+<th>의미</th>
+<th>예</th>
+</tr>
+</thead>
+<tbody><tr><td>PRIMARY KEY</td>
+<td>각 행을 구분하는 고유 식별</td>
+<td>회원 ID 중복 불가</td>
+</tr>
+<tr><td>FOREIGN KEY</td>
+<td>다른 테이블 데이터와 관계 확인</td>
+<td>없는 회원의 주문 제한</td>
+</tr>
+<tr><td>NOT NULL</td>
+<td>값을 반드시 제공</td>
+<td>주문 날짜 필수</td>
+</tr>
+<tr><td>UNIQUE</td>
+<td>중복 값 제한</td>
+<td>이메일 중복 금지</td>
+</tr>
+<tr><td>CHECK</td>
+<td>값의 조건 확인</td>
+<td>수량이 0 이상</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="lesson-section field-section" id="db-ch04"><div class="section-number">04</div>
+<div><h2>테이블 설계와 정규화: 중복과 불일치 줄이기</h2>
+<p>회원 이름을 모든 주문 행에 복사하면 이름 변경 때 여러 곳을 고쳐야 해요. 일부만 바뀌면 서로 다른 이름이 남습니다. 정규화는 데이터 중복과 갱신 문제를 줄이도록 테이블 구조를 나누고 관계를 정리하는 과정입니다.</p>
+<h3 id="db-normalize">대상을 나누되 관계는 키로 표현</h3>
+<table class="study-table"><thead><tr><th>설계 질문</th>
+<th>생각해 볼 점</th>
+<th>좋은 방향</th>
+</tr>
+</thead>
+<tbody><tr><td>이 행은 어떤 대상을 나타내나?</td>
+<td>회원 정보와 주문 정보가 섞였나?</td>
+<td>한 테이블은 한 주제에 집중</td>
+</tr>
+<tr><td>값이 반복되나?</td>
+<td>주소·이름이 여러 행에 복제되나?</td>
+<td>반복 데이터 분리 검토</td>
+</tr>
+<tr><td>어떤 값으로 연결하나?</td>
+<td>이름 변경에 영향을 받나?</td>
+<td>안정적인 식별 키 사용</td>
+</tr>
+</tbody>
+</table>
+<p>정규화만 무조건 많이 하는 것이 목표는 아닙니다. 읽기 성능이나 사용 패턴 때문에 의도적으로 중복을 두는 경우도 있지만, 일관성 유지 비용을 이해하고 선택해야 해요.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="db-ch05"><div class="section-number">05</div>
+<div><h2>인덱스: 자주 찾는 데이터를 빨리 찾는 안내표</h2>
+<p>인덱스는 특정 열을 기준으로 데이터를 더 빨리 찾도록 도와주는 자료구조예요. 책 뒤의 찾아보기처럼 필요한 위치를 빨리 찾을 수 있지만, 인덱스를 만들고 갱신하는 데 저장 공간과 쓰기 비용이 듭니다.</p>
+<h3 id="db-query">실행 계획으로 실제 접근 방식 확인</h3>
+<table class="study-table"><thead><tr><th>상황</th>
+<th>인덱스 효과</th>
+<th>주의점</th>
+</tr>
+</thead>
+<tbody><tr><td>자주 검색하는 열</td>
+<td>조회 범위를 줄일 수 있음</td>
+<td>데이터와 쿼리로 효과 확인</td>
+</tr>
+<tr><td>행이 매우 적은 테이블</td>
+<td>전체 읽기가 더 단순할 수 있음</td>
+<td>인덱스가 항상 빠르진 않음</td>
+</tr>
+<tr><td>자주 바뀌는 열</td>
+<td>갱신 비용이 추가</td>
+<td>필요한 인덱스만 유지</td>
+</tr>
+<tr><td>복합 조건 검색</td>
+<td>열 순서가 중요할 수 있음</td>
+<td>실행 계획·실제 성능 측정</td>
+</tr>
+</tbody>
+</table>
+<p>성능 문제는 추측만으로 인덱스를 추가하기보다 느린 쿼리를 측정하고 실행 계획을 확인해 원인을 찾습니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="db-ch06"><div class="section-number">06</div>
+<div><h2>트랜잭션: 함께 성공해야 하는 데이터 작업 묶기</h2>
+<p>계좌 송금처럼 여러 변경이 한 묶음으로 성공해야 하는 작업을 트랜잭션으로 처리해요. 중간에 실패하면 변경 전체를 취소해 데이터가 반만 적용된 상태가 되지 않게 합니다.</p>
+<h3 id="db-isolation">ACID와 동시에 발생한 변경</h3>
+<table class="study-table"><thead><tr><th>속성</th>
+<th>쉽게 말하면</th>
+</tr>
+</thead>
+<tbody><tr><td>Atomicity</td>
+<td>전부 적용하거나 전부 취소</td>
+</tr>
+<tr><td>Consistency</td>
+<td>작업 전후 데이터 규칙 유지</td>
+</tr>
+<tr><td>Isolation</td>
+<td>동시 작업의 간섭을 제어</td>
+</tr>
+<tr><td>Durability</td>
+<td>성공한 결과를 지속적으로 보존</td>
+</tr>
+</tbody>
+</table>
+<p>동시에 재고를 차감하는 요청이 오면 잠금·격리 수준 같은 데이터베이스 기능이 중요해져요. 강한 격리는 충돌을 줄일 수 있지만 처리량을 낮출 수도 있으므로 데이터베이스와 업무에 맞게 선택해야 합니다.</p>
+</div>
+</section>
+<section class="lesson-section field-section" id="db-ch07"><div class="section-number">07</div>
+<div><h2>접근 권한과 백업: 저장된 정보 지키기</h2>
+<p>애플리케이션 계정에는 필요한 테이블과 작업만 허용하세요. DB를 인터넷에 그대로 공개하지 않고, 비밀번호와 접속 주소는 안전하게 관리하며, 개인정보를 테스트 환경으로 옮길 때도 보호 조치를 해야 합니다.</p>
+<p>백업 주기와 보관 위치를 정하고 실제 복구 테스트를 해야 해요. 백업 파일을 만든 사실만으로 복구가 보장되지는 않습니다.</p>
+<table class="study-table"><thead><tr><th>운영 습관</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr><td>최소 권한 계정</td>
+<td>계정 유출 시 피해 범위를 제한</td>
+</tr>
+<tr><td>비밀 값 분리</td>
+<td>소스 코드와 로그에서 비밀번호 보호</td>
+</tr>
+<tr><td>정기 백업</td>
+<td>삭제·손상·장애에 대비</td>
+</tr>
+<tr><td>복원 리허설</td>
+<td>실제로 되돌릴 수 있는지 확인</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="visual-main course-visual field-visual" id="db-glance"><div class="visual-kicker">DATABASE FIELD GUIDE <span>그림과 표로 한눈에</span>
+</div>
+<h1>표와 키로 정보를 잇고<br><span>트랜잭션으로 지켜요</span>
+</h1>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">01</span>
+<div><h2>회원과 주문, 키로 연결</h2>
+<p>각 표가 맡은 정보를 저장하고 식별자로 관계를 맺어요.</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>members</b>
+<small>회원 id·이름</small>
+</div>
+<i>1 ─── N</i>
+<div><b>orders</b>
+<small>주문 id·member_id</small>
+</div>
+</div>
+<table class="visual-table"><thead><tr><th>작업</th>
+<th>SQL 명령</th>
+<th>안전 질문</th>
+</tr>
+</thead>
+<tbody><tr><td>조회</td>
+<td>SELECT</td>
+<td>필요한 행·열만 가져오나?</td>
+</tr>
+<tr><td>추가</td>
+<td>INSERT</td>
+<td>필수 값과 키가 올바른가?</td>
+</tr>
+<tr><td>수정</td>
+<td>UPDATE</td>
+<td>WHERE 조건이 정확한가?</td>
+</tr>
+<tr><td>삭제</td>
+<td>DELETE</td>
+<td>삭제 대상과 복구 방법을 확인했나?</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="visual-card"><div class="visual-title"><span class="visual-index">02</span>
+<div><h2>느린 조회를 찾는 순서</h2>
+<p>측정 → 실행 계획 → 필요한 인덱스 검토</p>
+</div>
+</div>
+<div class="field-pipeline"><div><b>느린 쿼리 확인</b>
+<small>시간·빈도</small>
+</div>
+<i>→</i>
+<div><b>실행 계획 읽기</b>
+<small>검색 범위</small>
+</div>
+<i>→</i>
+<div><b>인덱스 검토</b>
+<small>읽기·쓰기 균형</small>
+</div>
+<i>→</i>
+<div><b>다시 측정</b>
+<small>효과 확인</small>
+</div>
+</div>
+</section>
+</section>
+<section class="lesson-section" id="database-extra"><div class="section-number">더 알아보기</div><div><h2>인덱스는 조회를 돕지만 갱신 비용이 있어요</h2><p>인덱스는 값을 찾기 좋은 구조로 정리해 행을 빨리 찾도록 돕습니다. 저장 공간을 쓰고 INSERT·UPDATE·DELETE 때 갱신해야 하므로 많을수록 좋은 것은 아니에요.</p><div class="field-code"><div class="field-code-label">복합 인덱스와 실행 계획</div><pre><code>CREATE INDEX idx_orders_customer_date
+ON orders (customer_id, created_at);
+EXPLAIN SELECT order_id, created_at
+FROM orders
+WHERE customer_id = 42
+ORDER BY created_at;</code></pre></div><p>복합 인덱스의 열 순서는 중요합니다. customer_id 조건에는 적합하지만 created_at만 검색하면 같은 효과가 없을 수 있어요. 실행 계획에서 접근 경로와 예상 행 수를 확인하세요.</p><p class="field-note"><b>튜닝 순서</b> 느린 쿼리를 측정하고 실행 계획을 본 뒤 인덱스를 조정하고 다시 측정합니다.</p></div></section>
+<section class="lesson-section field-section" id="db-deeper"><div class="section-number">심화</div><div><h2>트랜잭션과 인덱스로 데이터의 일관성을 지키기</h2><h3>격리 수준은 동시 작업의 균형이에요</h3><p>동시에 실행되는 트랜잭션이 서로의 변경을 어떻게 볼지 격리 수준으로 정합니다. 격리가 약하면 아직 확정되지 않은 값이나 조회 결과 변동이 생길 수 있고, 강하면 대기와 충돌 비용이 커질 수 있습니다. 재고 차감처럼 한 규칙을 지켜야 하는 여러 작업은 트랜잭션으로 묶고 실패할 때 전체가 되돌아가는지 확인합니다.</p><h3>인덱스는 읽기를 돕고 쓰기 비용을 더해요</h3><p>인덱스는 행을 빠르게 찾게 해 주지만 저장 공간을 쓰고 데이터 변경 때 갱신됩니다. 실제 검색 조건·조인·정렬 패턴에 맞춰 만들고 실행 계획으로 전체 테이블 스캔 여부와 예상 행 수를 확인하세요. 복합 인덱스는 열의 순서도 중요합니다.</p><ul class="field-list"><li>기본 키와 외래 키로 관계와 중복을 관리합니다.</li><li>자주 쓰는 쿼리를 기준으로 인덱스를 설계합니다.</li><li>백업 복원과 스키마 변경 절차를 준비합니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="db-terms"><p class="eyebrow">QUICK GLOSSARY</p>
+<h2>DB 초보 용어사전</h2>
+<table class="study-table"><thead><tr><th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody><tr><td>테이블</td>
+<td>같은 종류의 정보를 행과 열로 모은 구조.</td>
+</tr>
+<tr><td>기본키</td>
+<td>테이블의 한 행을 유일하게 식별하는 값.</td>
+</tr>
+<tr><td>외래키</td>
+<td>다른 테이블의 행과 관계를 표현하는 값.</td>
+</tr>
+<tr><td>SQL</td>
+<td>관계형 데이터베이스에 조회·변경 작업을 요청하는 언어.</td>
+</tr>
+<tr><td>JOIN</td>
+<td>관련된 테이블의 행을 조건에 따라 연결해 조회.</td>
+</tr>
+<tr><td>인덱스</td>
+<td>검색을 빠르게 도와주는 별도의 자료구조.</td>
+</tr>
+<tr><td>트랜잭션</td>
+<td>하나의 작업으로 묶여 함께 성공·실패해야 하는 변경 단위.</td>
+</tr>
+<tr><td>정규화</td>
+<td>데이터 중복과 갱신 오류를 줄이도록 구조를 정리하는 과정.</td>
+</tr>
+</tbody>
+</table>
+</section>
+
+<div class="course-end"><a href="roadmap.html">학습 로드맵으로 돌아가기</a>
+</div>
+
+</main>
+</div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>

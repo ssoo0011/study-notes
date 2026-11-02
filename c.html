@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="C언어 자료형, 배열, 포인터와 메모리 구조를 예제로 익히는 학습 노트">
+  <title>C언어 · 개발 공부 노트</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/visual-guide.css">
+  <link rel="stylesheet" href="css/course-single.css">
+  <link rel="stylesheet" href="css/field-course.css">
+  <link rel="stylesheet" href="css/clarity.css">
+</head>
+<body class="lesson-page field-page">
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">{ }</span> 개발 공부 노트</a>
+    <a class="back-link" href="index.html">← 과목 목록</a>
+  </header>
+  <div class="lesson-layout course-onepage">
+    <aside class="lesson-sidebar course-sidebar">
+      <p class="eyebrow">C LANGUAGE · CONTENTS</p>
+      <h2>C언어</h2>
+      <nav aria-label="C언어 목차">
+        <a href="#c-start">시작하기</a>
+        <a href="#c-values">자료형과 연산</a>
+        <a href="#c-flow">조건과 반복</a>
+        <a href="#c-arrays">배열과 문자열</a>
+        <a href="#c-functions">함수와 전달 방식</a>
+        <a href="#c-pointers">포인터와 메모리</a>
+        <a href="#c-structs">구조체와 동적 할당</a>
+        <a href="#c-glance">한눈에 보기</a>
+<a href="#c-extra">포인터와 수명</a>
+<a href="#c-deeper">메모리 심화</a>
+        <a href="#c-terms">용어 정리</a></nav>
+    </aside>
+    <main class="lesson-content course-content field-content">
+      <section class="lesson-hero course-title" id="c-start">
+<h1>C언어</h1>
+</section>
+      <section class="callout field-callout">
+        <span class="callout-icon">🧭</span>
+        <p><strong>C 코드를 읽을 때는 변수의 값과 주소를 따로 생각해요.</strong><br>정수 변수에는 값이 저장되고, 포인터 변수에는 다른 객체의 주소가 저장됩니다. 연산 한 줄 뒤에 무엇이 바뀌는지 기록하면 실행 결과를 놓치지 않아요.</p>
+      </section>
+      <section class="lesson-section field-section" id="c-values">
+        <div class="section-number">01</div>
+        <div>
+          <h2>자료형과 연산: 비트의 해석 규칙</h2>
+          <p>자료형은 메모리에 저장된 비트를 어떤 값으로 해석할지와 연산 방법을 정해요. <code>int</code>는 정수, <code>char</code>는 문자 코드에 해당하는 작은 정수, <code>float</code>와 <code>double</code>은 근삿값 실수를 표현합니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">정수 나눗셈과 형 변환</div>
+            <pre><code>int a = 7;
+int b = 2;
+printf("%d\n", a / b);          // 3
+printf("%.1f\n", (double)a / b); // 3.5</code></pre>
+          </div>
+          <p>두 정수의 나눗셈은 소수 부분을 버립니다. 한쪽을 실수형으로 변환하면 실수 나눗셈이 돼요. 형 변환은 값을 다른 자료형의 표현 방식으로 바꾸는 일입니다.</p>
+          <h3>연산자와 증감</h3>
+          <p><code>==</code>는 같은지 비교하고 <code>=</code>는 대입해요. <code>&amp;&amp;</code>, <code>||</code>, <code>!</code>는 논리 연산자입니다. 전위 증감은 먼저 값을 바꾸고, 후위 증감은 기존 값을 식에서 사용한 다음 값을 바꿉니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">전위와 후위의 평가 순서</div>
+            <pre><code>int x = 4;
+printf("%d\n", x++);  // 4를 출력한 뒤 x는 5
+printf("%d\n", ++x);  // x를 6으로 만든 뒤 6 출력</code></pre>
+          </div>
+          <p class="field-note"><b>주의할 점</b> 한 표현식 안에서 같은 변수를 여러 번 변경하는 복잡한 증감 조합은 피하세요. 컴파일러와 언어 규칙에 따라 결과를 잘못 예상하기 쉽습니다.</p>
+        </div>
+      </section>
+      <section class="lesson-section field-section" id="c-flow">
+        <div class="section-number">02</div>
+        <div>
+          <h2>조건과 반복: 문장을 실행할지 고르기</h2>
+          <p><code>if</code>와 <code>switch</code>는 조건에 따라 실행 흐름을 나눠요. <code>for</code>는 반복 횟수나 범위가 뚜렷할 때, <code>while</code>은 조건이 유지되는 동안 반복할 때 자주 씁니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">반복문의 네 부분</div>
+            <pre><code>int total = 0;
+for (int i = 1; i &lt;= 4; i++) {
+    total += i;
+}
+printf("%d\n", total);  // 10</code></pre>
+          </div>
+          <p><code>for (초기화; 조건; 증감)</code>은 초기화를 한 번 하고, 조건을 검사한 뒤 본문과 증감을 반복해요. 조건이 거짓이 되면 반복문 다음으로 이동합니다.</p>
+          <table class="study-table">
+            <thead><tr><th>문장</th><th>역할</th><th>확인할 점</th></tr></thead>
+            <tbody>
+              <tr><td><code>break</code></td><td>가장 가까운 반복문 또는 switch를 종료</td><td>종료 뒤 이동할 위치</td></tr>
+              <tr><td><code>continue</code></td><td>이번 반복의 나머지를 건너뜀</td><td>다음 조건 검사·증감 흐름</td></tr>
+              <tr><td><code>switch</code></td><td>정수형 계열 값에 따라 분기</td><td>break가 없으면 다음 case로 이어짐</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="lesson-section field-section" id="c-arrays">
+        <div class="section-number">03</div>
+        <div>
+          <h2>배열과 문자열: 같은 형식의 값을 연속 저장</h2>
+          <p>배열은 같은 자료형의 원소를 메모리에 연속해서 저장합니다. 배열의 크기가 n이면 유효한 인덱스는 0부터 n-1까지예요. 범위를 벗어나도 자동으로 오류를 알려 주지 않을 수 있으므로 직접 확인해야 합니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">배열 원소를 순회하기</div>
+            <pre><code>int scores[4] = {80, 90, 75, 95};
+int total = 0;
+for (int i = 0; i &lt; 4; i++) {
+    total += scores[i];
+}
+printf("%.1f\n", total / 4.0);  // 85.0</code></pre>
+          </div>
+          <p>문자열은 문자 배열이며 마지막에 문자열의 끝을 표시하는 널 문자 <code>'\0'</code>가 필요해요. 따라서 글자 5개를 저장할 문자열 배열은 널 문자 자리까지 포함해 최소 6칸이어야 합니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">문자열의 끝 표시</div>
+            <pre><code>char name[6] = "hello";
+// 실제 저장: 'h' 'e' 'l' 'l' 'o' '\0'
+printf("%s\n", name);</code></pre>
+          </div>
+          <p><code>scanf("%s", name)</code>은 공백 전까지만 읽습니다. 입력 길이를 제한하거나 더 안전한 입력 함수를 사용해 배열 범위를 넘지 않게 해야 해요.</p>
+        </div>
+      </section>
+      <section class="lesson-section field-section" id="c-functions">
+        <div class="section-number">04</div>
+        <div>
+          <h2>함수와 전달 방식: 작업을 나누고 재사용하기</h2>
+          <p>함수는 이름이 있는 작업 단위예요. 반환형, 함수 이름, 매개변수 목록으로 선언하며 결과가 없으면 반환형을 <code>void</code>로 씁니다. 함수 원형을 호출보다 앞에서 선언하면 컴파일러가 사용 형태를 확인할 수 있어요.</p>
+          <div class="field-code">
+            <div class="field-code-label">값 전달은 원본을 바꾸지 않아요</div>
+            <pre><code>void add_one(int value) {
+    value++;
+}
+int main(void) {
+    int number = 5;
+    add_one(number);
+    printf("%d\n", number);  // 5
+}</code></pre>
+          </div>
+          <p>C의 기본 인수 전달은 값 복사예요. 함수 안의 매개변수를 바꿔도 호출한 쪽 변수는 그대로입니다. 호출한 쪽 값을 바꾸려면 그 변수의 주소를 포인터로 전달해야 해요.</p>
+          <div class="field-code">
+            <div class="field-code-label">포인터를 이용해 호출한 쪽 값 변경</div>
+            <pre><code>void add_one(int *value) {
+    (*value)++;
+}
+int main(void) {
+    int number = 5;
+    add_one(&amp;number);
+    printf("%d\n", number);  // 6
+}</code></pre>
+          </div>
+        </div>
+      </section>
+      <section class="lesson-section field-section" id="c-pointers">
+        <div class="section-number">05</div>
+        <div>
+          <h2>포인터와 메모리: 주소를 통해 값에 접근</h2>
+          <p>포인터는 다른 객체의 메모리 주소를 저장하는 변수예요. <code>&amp;</code>는 변수의 주소를 구하고, 포인터 앞의 <code>*</code>는 그 주소가 가리키는 값을 읽거나 씁니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">주소와 역참조</div>
+            <pre><code>int count = 3;
+int *pointer = &amp;count;
+*pointer = 8;
+printf("%d\n", count);  // 8</code></pre>
+          </div>
+          <p>포인터의 타입은 가리키는 데이터의 타입과 맞아야 해요. 초기화되지 않은 포인터나 이미 수명이 끝난 객체를 가리키는 포인터를 역참조하면 정의되지 않은 동작이 생길 수 있습니다.</p>
+          <table class="study-table">
+            <thead><tr><th>표현</th><th>뜻</th><th>예</th></tr></thead>
+            <tbody>
+              <tr><td><code>int value</code></td><td>정수 값을 저장</td><td><code>value = 8</code></td></tr>
+              <tr><td><code>int *p</code></td><td>정수 객체의 주소를 저장</td><td><code>p = &amp;value</code></td></tr>
+              <tr><td><code>&amp;value</code></td><td>value의 주소</td><td>주소를 포인터에 대입</td></tr>
+              <tr><td><code>*p</code></td><td>p가 가리키는 객체</td><td>그 객체의 값 읽기·수정</td></tr>
+            </tbody>
+          </table>
+          <h3>배열과 포인터의 관계</h3>
+          <p>배열 이름은 대부분의 식에서 첫 원소를 가리키는 포인터처럼 변환돼요. 그래서 <code>array[i]</code>와 <code>*(array + i)</code>는 같은 원소를 나타낼 수 있습니다. 하지만 배열 자체와 포인터 변수는 같은 것이 아니며, 배열은 선언한 크기만큼 공간을 차지해요.</p>
+        </div>
+      </section>
+      <section class="lesson-section field-section" id="c-structs">
+        <div class="section-number">06</div>
+        <div>
+          <h2>구조체와 동적 메모리</h2>
+          <p>구조체는 서로 다른 자료형의 데이터를 하나의 사용자 정의 타입으로 묶어요. 일반 구조체 변수는 점 연산자 <code>.</code>, 구조체 포인터는 화살표 연산자 <code>-&gt;</code>로 멤버에 접근합니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">구조체 선언과 멤버 접근</div>
+            <pre><code>struct Student {
+    int id;
+    char name[20];
+};
+struct Student student = {1, "Mina"};
+printf("%d %s\n", student.id, student.name);</code></pre>
+          </div>
+          <p><code>malloc</code>과 <code>free</code>를 사용하는 프로그램은 <code>&lt;stdlib.h&gt;</code>를 포함해야 해요. 화면에 출력하는 <code>printf</code>를 쓰려면 <code>&lt;stdio.h&gt;</code>도 필요합니다. <code>malloc</code>은 실행 중 필요한 메모리를 요청하고, 사용이 끝난 메모리는 <code>free</code>로 반환해요. 할당이 실패할 수 있으므로 결과가 <code>NULL</code>인지 확인한 뒤 사용합니다.</p>
+          <div class="field-code">
+            <div class="field-code-label">동적 할당의 기본 흐름</div>
+            <pre><code>int *numbers = malloc(3 * sizeof *numbers);
+if (numbers != NULL) {
+    numbers[0] = 10;
+    free(numbers);
+}</code></pre>
+          </div>
+          <p>동적 메모리를 해제하지 않으면 사용하지 않는 공간이 계속 점유되는 메모리 누수가 생길 수 있어요. 해제한 뒤 포인터를 다시 사용하지 않도록 주의합니다.</p>
+        </div>
+      </section>
+      <section class="visual-main course-visual field-visual" id="c-glance">
+        <div class="visual-kicker">C FIELD GUIDE <span>핵심 흐름</span></div>
+        <h1>변수에서 주소로<br><span>주소에서 값으로</span></h1>
+        <section class="visual-card">
+          <div class="visual-title"><span class="visual-index">01</span><div><h2>포인터 읽는 법</h2><p>선언과 사용에서 별표가 가리키는 의미를 구분해요.</p></div></div>
+          <div class="field-pipeline"><div><b>값 저장</b><small>int number</small></div><i>→</i><div><b>주소 확인</b><small>&amp;number</small></div><i>→</i><div><b>주소 저장</b><small>int *pointer</small></div><i>→</i><div><b>값 접근</b><small>*pointer</small></div></div>
+        </section>
+        <section class="visual-card">
+          <div class="visual-title"><span class="visual-index">02</span><div><h2>배열 경계 점검</h2><p>선언한 크기와 반복 조건이 맞는지 확인합니다.</p></div></div>
+          <table class="visual-table"><thead><tr><th>배열 크기</th><th>첫 인덱스</th><th>마지막 유효 인덱스</th></tr></thead><tbody><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>4</td><td>0</td><td>3</td></tr><tr><td>n</td><td>0</td><td>n - 1</td></tr></tbody></table>
+        </section>
+      </section>
+      <section class="lesson-section" id="c-extra"><div class="section-number">더 알아보기</div><div><h2>포인터 타입과 메모리 수명을 함께 확인해요</h2><p>포인터 타입은 주소에서 어떤 자료형을 읽고 얼마나 이동할지를 정합니다. int 포인터를 1 증가시키면 다음 int 원소로, char 포인터는 다음 바이트로 이동해요.</p><div class="field-code"><div class="field-code-label">배열과 포인터</div><pre><code>int values[] = {10, 20, 30};
+int *cursor = values;
+printf("%d\n", *cursor);        // 10
+printf("%d\n", *(cursor + 1)); // 20</code></pre></div><p>지역 변수 주소를 함수 밖으로 반환하면 변수 수명이 끝난 뒤 잘못된 주소가 됩니다. 동적 메모리는 사용 후 해제하고 해제한 포인터를 다시 사용하거나 두 번 해제하지 않아야 해요.</p><p><code>const int *p</code>는 p를 통해 값을 바꾸지 못한다는 뜻이고 <code>int *const p</code>는 p가 다른 주소를 가리키지 못한다는 뜻입니다.</p></div></section>
+<section class="lesson-section field-section" id="c-deeper"><div class="section-number">심화</div><div><h2>C의 메모리와 정수 경계를 안전하게 다루기</h2><h3>정의되지 않은 동작은 결과를 보장하지 않아요</h3><p>배열 범위 밖 접근, 초기화하지 않은 값 사용, 해제한 메모리 참조는 우연히 출력이 맞더라도 언어가 동작을 보장하지 않습니다. 컴파일러 최적화에 따라 결과가 달라질 수 있어요. 경고를 켜고 주소·정의되지 않은 동작 검사기를 이용해 문제를 찾습니다.</p><h3>비트 마스크는 형의 폭과 부호를 고려해요</h3><p>비트 켜기는 OR, 끄기는 AND와 NOT, 검사는 AND를 사용합니다. 시프트에는 unsigned 형을 쓰고 시프트 횟수가 비트 수보다 작은지 확인하세요. 구조체 멤버 사이에는 정렬을 위한 패딩이 생길 수 있어 멤버 크기만 더한 값과 다를 수 있습니다.</p><ul class="field-list"><li>동적 할당 결과가 NULL인지 확인하고 소유권과 해제 책임을 정합니다.</li><li>문자열 버퍼는 널 문자 공간까지 포함해 크기를 계산합니다.</li><li>해제한 포인터를 다시 사용하거나 두 번 해제하지 않습니다.</li></ul></div></section>
+<section class="course-terms field-terms" id="c-terms">
+        <p class="eyebrow">QUICK GLOSSARY</p>
+        <h2>C언어 용어 정리</h2>
+        <table class="study-table"><thead><tr><th>용어</th><th>뜻</th></tr></thead><tbody>
+          <tr><td>자료형</td><td>값의 표현 방식과 그 값에 허용되는 연산의 종류.</td></tr>
+          <tr><td>배열</td><td>같은 자료형 원소를 연속된 공간에 저장한 자료구조.</td></tr>
+          <tr><td>널 문자</td><td>C 문자열의 끝을 표시하는 문자 <code>'\0'</code>.</td></tr>
+          <tr><td>포인터</td><td>객체의 메모리 주소를 저장하는 변수.</td></tr>
+          <tr><td>역참조</td><td>포인터가 가리키는 주소의 객체에 접근하는 연산.</td></tr>
+          <tr><td>구조체</td><td>서로 다른 자료형의 멤버를 하나로 묶은 사용자 정의 타입.</td></tr>
+          <tr><td>메모리 누수</td><td>더 이상 필요 없는 동적 메모리를 반환하지 않아 점유가 남는 상태.</td></tr>
+        </tbody></table>
+      </section>
+      
+<div class="course-end"><a href="index.html">전체 과목으로 돌아가기</a></div>
+    
+</main>
+  </div>
+  <a class="back-to-top" href="#" aria-label="맨 위로 이동"><span aria-hidden="true">↑</span><span>맨 위로</span></a>
+</body>
+</html>
